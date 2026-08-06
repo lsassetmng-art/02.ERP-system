@@ -1,0 +1,23 @@
+52.master-data non-executable apply runner skeleton
+
+STATUS=TEXT_ONLY_NOT_FOR_RUN
+REQUIRES_SEPARATE_EXPLICIT_DB_APPLY_GO=YES
+
+This file is not executable and intentionally has no shebang.
+
+Future runner shape:
+
+1. assert explicit final DB apply GO
+2. assert expected HEAD
+3. assert clean git status
+4. assert DATABASE_URL
+5. run read-only pre-apply check
+6. stop unless object state matches plan
+7. apply DDL with reviewed SQL
+8. verify DDL with read-only check
+9. apply RLS with reviewed SQL
+10. verify RLS with read-only check
+11. write report
+12. stop before API DB adapter activation
+
+Do not convert this skeleton into an executable script without a separate review.
