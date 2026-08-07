@@ -1,0 +1,28 @@
+# 52.master-data DB Adapter Design Patch Acceptance Index
+
+Generated: 2026-08-07 23:08:22 +0900
+
+## Decision
+
+- ACCEPTANCE_DECISION: PASS_DB_ADAPTER_DESIGN_PATCH_ACCEPTANCE_RETRY_NO_ACTIVATION_NO_PYTHON
+- NEXT_ALLOWED: DB_ADAPTER_DESIGN_PATCH_DOCS_AND_RUNTIME_COMMIT_PUSH_AFTER_EXPLICIT_GO
+
+## Guardrails
+
+- DB_CONNECTION: NO
+- PSQL_EXECUTED: NO
+- DB_MUTATION: NO
+- DDL_APPLY: NO
+- RLS_APPLY: NO
+- API_ACTIVATION: NO
+- FACTORY_SWITCH: NO
+- ROUTE_SWITCH: NO
+- ADAPTER_PATCH: NO_ACCEPTANCE_ONLY
+- PYTHON_USED: NO
+- GIT_ADD: NO
+- GIT_COMMIT: NO
+- GIT_PUSH: NO
+
+## Candidate
+
+- DB_ADAPTER_FILE: /data/data/com.termux/files/home/04.ERP-development/52.master-data/infrastructure/repositories/master-data-db-repository.mjs
