@@ -1,0 +1,4 @@
+ERP_UNNUMBERED_TO_NUMBERED_TRANSITION_SUMMARY
+design_root=/data/data/com.termux/files/home/02.ERP-system
+implementation_root=/data/data/com.termux/files/home/04.ERP-development
+total_rows=12

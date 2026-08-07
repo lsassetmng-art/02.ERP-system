@@ -1,0 +1,13 @@
+scope	kind	old_path	canonical_target	action	status	note
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/.evidence-harvest		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/000.platform		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/001.core-principles		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/002.interface-and-contract		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/003.control-and-workflow		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/004.mapping-and-normalization		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/100.business		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/200.management		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/300.analytics		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/300.audit		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/400.analytics		manual_classification_required	no-target	not in current numbered canon
+design	root-module	/data/data/com.termux/files/home/02.ERP-system/900.meta		manual_classification_required	no-target	not in current numbered canon
