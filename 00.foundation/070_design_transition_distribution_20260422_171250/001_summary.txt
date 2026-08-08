@@ -1,0 +1,15 @@
+ERP_DESIGN_TRANSITION_DISTRIBUTION_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/070_design_transition_distribution_20260422_171250
+unit_count=0
+dir_distributed=0
+dir_conflict=0
+dir_unclassified=0
+file_distributed=0
+file_conflict=0
+file_unclassified=0
+dir_created=0
+file_moved=0
+file_copied=0
+file_skipped=0
+total_operations=526
+rule_doc=/data/data/com.termux/files/home/02.ERP-system/00.foundation/041_ERP_DESIGN_TRANSITION_DISTRIBUTION_RULE.md

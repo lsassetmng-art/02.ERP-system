@@ -1,0 +1,12 @@
+ERP_FAST_PRIORITY_PAYLOAD_DISTRIBUTION_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/091_fast_priority_payload_distribution_20260422_192233
+total_source_files=255
+distributed_count=2
+module_unknown_count=253
+layer_unknown_count=0
+conflict_count=0
+archived_count=0
+dir_created=0
+file_copied=2
+file_moved=253
+total_operations=255

@@ -1,0 +1,9 @@
+ERP_FOUNDATION_UNCLASSIFIED_RESOLUTION_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/084_foundation_unclassified_resolution_20260422_200016
+source_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/900.meta/912.transition-unclassified/unclassified-files
+total_files=0
+resolved_count=0
+manual_count=0
+conflict_count=0
+file_moved=0
+total_operations=4

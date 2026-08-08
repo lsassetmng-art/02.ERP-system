@@ -1,0 +1,12 @@
+ERP_FOUNDATION_VERIFY_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/083_foundation_verify_20260422_200033
+base=/data/data/com.termux/files/home/02.ERP-system/00.foundation
+root_index_ok=1
+root_overview_ok=1
+structure_ok=1
+payload_total=401
+archive_payload_count=197
+unclassified_payload_count=0
+conflict_payload_count=0
+status=PASS
+note=foundation-clean

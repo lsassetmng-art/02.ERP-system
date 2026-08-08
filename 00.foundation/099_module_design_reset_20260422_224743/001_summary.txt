@@ -1,0 +1,8 @@
+ERP_MODULE_DESIGN_RESET_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/099_module_design_reset_20260422_224743
+archive_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_224743/module-design-reset
+unit_count=46
+moved_payload_count=289
+total_operations=2773
+foundation_touched=no
+implementation_touched=no

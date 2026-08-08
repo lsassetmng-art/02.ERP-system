@@ -1,0 +1,6 @@
+ERP_DESIGN_DISTRIBUTION_VERIFY_FIXED_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/081_design_distribution_verify_fixed_20260422_174734
+total_count=46
+pass_count=0
+warn_count=46
+fail_count=0

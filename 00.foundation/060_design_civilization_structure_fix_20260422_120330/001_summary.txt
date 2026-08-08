@@ -1,0 +1,15 @@
+ERP_DESIGN_CIVILIZATION_STRUCTURE_FIX_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/060_design_civilization_structure_fix_20260422_120330
+unit_count=0
+layer_dir_created=0
+layer_dir_exists=0
+index_created=0
+index_exists=0
+overview_created=0
+overview_exists=0
+legacy_dir_moved=0
+legacy_dir_skipped=0
+root_file_moved=0
+root_file_skipped=0
+total_operations=2682
+rule_doc=/data/data/com.termux/files/home/02.ERP-system/00.foundation/040_ERP_DESIGN_CIVILIZATIONOS_STRUCTURE_AND_DISTRIBUTION_RULE.md

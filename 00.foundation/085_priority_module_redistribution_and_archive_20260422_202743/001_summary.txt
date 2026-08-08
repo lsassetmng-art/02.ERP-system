@@ -1,0 +1,14 @@
+ERP_PRIORITY_MODULE_REDISTRIBUTION_AND_ARCHIVE_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/085_priority_module_redistribution_and_archive_20260422_202743
+total_foundation_files=203
+redistributed_count=199
+conflict_count=0
+left_in_foundation_count=4
+empty_dir_archived_count=98
+empty_dir_skipped_nonempty_count=0
+dir_created=53
+file_copied=199
+file_moved=297
+total_operations=301
+foundation_archive_root=/data/data/com.termux/files/home/02.ERP-system/00.foundation/900.meta/913.module-redistribution-archive/20260422_202743
+empty_dir_archive_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_202743

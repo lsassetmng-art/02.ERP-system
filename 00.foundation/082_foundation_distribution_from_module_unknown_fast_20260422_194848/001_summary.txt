@@ -1,0 +1,11 @@
+ERP_FOUNDATION_DISTRIBUTION_FROM_MODULE_UNKNOWN_FAST_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/082_foundation_distribution_from_module_unknown_fast_20260422_194848
+source_root=/data/data/com.termux/files/home/02.ERP-system/90.transition-triage/20.unclassified-global/module-unknown-fast
+total_files=199
+distributed_count=197
+conflict_count=2
+unknown_count=0
+archived_count=197
+file_copied=197
+file_moved=199
+total_operations=199

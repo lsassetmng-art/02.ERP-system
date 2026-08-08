@@ -1,0 +1,6 @@
+ERP_MODULE_VERIFY_FIXED_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/092_module_verify_fixed_20260422_203208
+total_count=46
+pass_count=11
+warn_count=35
+fail_count=0

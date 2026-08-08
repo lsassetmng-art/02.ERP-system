@@ -1,0 +1,12 @@
+ERP_FULL_DESIGN_RESET_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/100_full_design_reset_20260422_225415
+archive_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_225415/full-design-reset
+archive_module_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_225415/full-design-reset/module-payload
+archive_rootfile_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_225415/full-design-reset/root-files
+unit_count=46
+moved_payload_count=0
+moved_rootfile_count=197
+root_file_count_after=2
+total_operations=2683
+foundation_touched=no
+implementation_touched=no

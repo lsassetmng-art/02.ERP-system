@@ -1,0 +1,8 @@
+ERP_LEGACY_ROOT_FOLDER_FIND_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/096_legacy_root_folder_find_20260422_221440
+erp_root=/data/data/com.termux/files/home/02.ERP-system
+total_roots=41
+canonical_roots=29
+legacy_roots=12
+legacy_nonempty=10
+legacy_empty=2

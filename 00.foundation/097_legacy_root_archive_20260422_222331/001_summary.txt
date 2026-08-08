@@ -1,0 +1,8 @@
+ERP_LEGACY_ROOT_ARCHIVE_SUMMARY
+run_dir=/data/data/com.termux/files/home/02.ERP-system/00.foundation/097_legacy_root_archive_20260422_222331
+archive_root=/data/data/com.termux/files/home/02.ERP-system/99.archive/20260422_222331/legacy-root-structure
+total_targets=12
+moved_count=12
+missing_count=0
+remaining_legacy_count=0
+total_operations=12
