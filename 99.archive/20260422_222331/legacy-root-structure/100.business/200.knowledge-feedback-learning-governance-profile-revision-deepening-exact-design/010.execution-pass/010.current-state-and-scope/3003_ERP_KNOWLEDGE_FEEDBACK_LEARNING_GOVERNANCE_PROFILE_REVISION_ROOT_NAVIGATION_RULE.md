@@ -1,0 +1,36 @@
+# ============================================================
+# ERP KNOWLEDGE FEEDBACK LEARNING GOVERNANCE PROFILE REVISION ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-3003
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.knowledge_feedback_learning_governance_profile_revision.root_navigation_rule
+component: knowledge-feedback-learning-governance-profile-revision-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2997_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_CURRENT_STATE.md
+
+2.
+2998_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_POSITIONING.md
+
+3.
+2999_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_CANONICAL_SCOPE.md
+
+4.
+3000_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_OWNERSHIP_MAP.md
+
+5.
+3001_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_COMPLETION_TARGET.md
+
+6.
+3002_ERP_KNOWLEDGE_FEEDBACK_LEARNING_GOVERNANCE_PROFILE_REVISION_EXIT_CRITERIA.md
+

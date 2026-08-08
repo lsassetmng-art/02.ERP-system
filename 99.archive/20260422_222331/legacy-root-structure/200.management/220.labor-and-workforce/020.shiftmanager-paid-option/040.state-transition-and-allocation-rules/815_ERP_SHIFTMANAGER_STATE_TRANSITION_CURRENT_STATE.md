@@ -1,0 +1,28 @@
+# ============================================================
+# ERP SHIFTMANAGER STATE TRANSITION CURRENT STATE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-815
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-15
+scope: erp.shiftmanager_option.state_transition.current_state
+component: shiftmanager-state-transition-current-state
+
+
+# ABSTRACT
+
+Defines the current state for the first exact
+state-transition and allocation-rule pass for the
+ShiftManager paid option.
+
+This pass fixes:
+- plan and preference states
+- assignment and confirmation rules
+- swap and publication transitions
+- audit-sensitive allocation treatment
+

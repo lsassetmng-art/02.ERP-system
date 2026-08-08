@@ -1,0 +1,51 @@
+# ============================================================
+# ERP LABORMANAGER PAID OPTION OBJECT PAYLOAD ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2422
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.labormanager_paid_option.object_payload.root_navigation_rule
+component: labormanager-paid-option-object-payload-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2411_ERP_LABORMANAGER_PAID_OPTION_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+2.
+2412_ERP_LABORMANAGER_PAID_OPTION_OBJECT_FAMILY_SET.md
+
+3.
+2413_ERP_LABOR_STAFF_PROFILE_EXACT_PAYLOAD.md
+
+4.
+2414_ERP_LABOR_ATTENDANCE_AND_LEAVE_EXACT_PAYLOAD.md
+
+5.
+2415_ERP_LABOR_ONBOARDING_OFFBOARDING_TRAINING_EXACT_PAYLOAD.md
+
+6.
+2416_ERP_LABOR_COMPLIANCE_CHECK_EXACT_PAYLOAD.md
+
+7.
+2417_ERP_LABORMANAGER_VS_SHIFTMANAGER_BOUNDARY_RULE.md
+
+8.
+2418_ERP_LABORMANAGER_VS_PAYROLL_BOUNDARY_RULE.md
+
+9.
+2419_ERP_LABORMANAGER_VS_MANAGEMENT_BOUNDARY_RULE.md
+
+10.
+2420_ERP_LABORMANAGER_VS_DISPATCHED_AI_ROBOT_BOUNDARY_RULE.md
+
+11.
+2421_ERP_LABORMANAGER_PAID_OPTION_UNRESOLVED_GAP_INVENTORY.md
+

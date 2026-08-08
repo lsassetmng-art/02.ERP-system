@@ -1,0 +1,36 @@
+# ============================================================
+# ERP OBJECTIVE FUNCTION EXCEPTION HIERARCHY DELEGATION POLICY ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-3195
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.objective_function_exception_hierarchy_delegation_policy.root_navigation_rule
+component: objective-function-exception-hierarchy-delegation-policy-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+3189_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_CURRENT_STATE.md
+
+2.
+3190_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_POSITIONING.md
+
+3.
+3191_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_CANONICAL_SCOPE.md
+
+4.
+3192_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_OWNERSHIP_MAP.md
+
+5.
+3193_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_COMPLETION_TARGET.md
+
+6.
+3194_ERP_OBJECTIVE_FUNCTION_EXCEPTION_HIERARCHY_DELEGATION_POLICY_EXIT_CRITERIA.md
+

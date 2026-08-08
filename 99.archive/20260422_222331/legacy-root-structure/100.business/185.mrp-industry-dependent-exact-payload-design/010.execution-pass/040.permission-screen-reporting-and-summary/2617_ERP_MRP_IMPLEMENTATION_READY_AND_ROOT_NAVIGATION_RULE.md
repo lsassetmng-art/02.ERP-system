@@ -1,0 +1,111 @@
+# ============================================================
+# ERP MRP IMPLEMENTATION READY AND ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2617
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.mrp.implementation_ready_and_root_navigation_rule
+component: mrp-implementation-ready-and-root-navigation-rule
+
+
+# IMPLEMENTATION READY CHECKLIST
+
+MRP may be treated as implementation-ready in this pass only when:
+- demand requirement / planned supply / shortage projection / replenishment recommendation / plan run payloads are fixed
+- purchase / manufacturing / inventory / sales boundary is fixed
+- request / response contracts are fixed
+- lifecycle and progression semantics are fixed
+- permission, screen, and reporting surfaces are fixed
+
+# REQUIRED READING ORDER
+
+1.
+2586_ERP_MRP_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CURRENT_STATE.md
+
+2.
+2587_ERP_MRP_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_POSITIONING.md
+
+3.
+2588_ERP_MRP_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CANONICAL_SCOPE.md
+
+4.
+2589_ERP_MRP_TRUTH_MAP.md
+
+5.
+2590_ERP_MRP_COMPLETION_TARGET.md
+
+6.
+2591_ERP_MRP_EXIT_CRITERIA.md
+
+7.
+2593_ERP_MRP_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+8.
+2594_ERP_MRP_OBJECT_FAMILY_SET.md
+
+9.
+2595_ERP_DEMAND_REQUIREMENT_CASE_EXACT_PAYLOAD.md
+
+10.
+2596_ERP_PLANNED_SUPPLY_ORDER_CASE_EXACT_PAYLOAD.md
+
+11.
+2597_ERP_SHORTAGE_PROJECTION_AND_REPLENISHMENT_RECOMMENDATION_EXACT_PAYLOAD.md
+
+12.
+2598_ERP_PLAN_RUN_CASE_EXACT_PAYLOAD.md
+
+13.
+2599_ERP_MRP_VS_PURCHASE_BOUNDARY_RULE.md
+
+14.
+2600_ERP_MRP_VS_MANUFACTURING_BOUNDARY_RULE.md
+
+15.
+2601_ERP_MRP_VS_INVENTORY_BOUNDARY_RULE.md
+
+16.
+2602_ERP_MRP_VS_SALES_BOUNDARY_RULE.md
+
+17.
+2603_ERP_MRP_UNRESOLVED_GAP_INVENTORY.md
+
+18.
+2605_ERP_MRP_CONTRACT_STATEFLOW_CURRENT_STATE.md
+
+19.
+2606_ERP_MRP_REQUEST_RESPONSE_CONTRACTS.md
+
+20.
+2607_ERP_MRP_LIFECYCLE_AND_STATUSFLOW_RULE.md
+
+21.
+2608_ERP_DEMAND_TO_PLAN_RUN_PROGRESSION_RULE.md
+
+22.
+2609_ERP_PLANNED_SUPPLY_AND_RECOMMENDATION_RULE.md
+
+23.
+2610_ERP_SHORTAGE_AND_EXCEPTION_INTERPRETATION_RULE.md
+
+24.
+2611_ERP_MRP_PRIORITY_SEQUENCE.md
+
+25.
+2613_ERP_MRP_COMPLETION_RULE_CURRENT_STATE.md
+
+26.
+2614_ERP_MRP_PERMISSION_AND_AUDIT_RULE.md
+
+27.
+2615_ERP_MRP_SCREEN_INVENTORY_AND_NAVIGATION.md
+
+28.
+2616_ERP_MRP_PRIMARY_UI_STATEFLOW_AND_REPORTING_RULE.md
+

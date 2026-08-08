@@ -1,0 +1,48 @@
+# ============================================================
+# ERP COMPANY WIDE MBO PAID OPTION OBJECT PAYLOAD ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2505
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.company_wide_mbo_paid_option.object_payload.root_navigation_rule
+component: company-wide-mbo-paid-option-object-payload-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2495_ERP_COMPANY_WIDE_MBO_PAID_OPTION_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+2.
+2496_ERP_COMPANY_WIDE_MBO_PAID_OPTION_OBJECT_FAMILY_SET.md
+
+3.
+2497_ERP_COMPANY_OBJECTIVE_REGISTRY_EXACT_PAYLOAD.md
+
+4.
+2498_ERP_OBJECTIVE_ASSIGNMENT_CASE_EXACT_PAYLOAD.md
+
+5.
+2499_ERP_OBJECTIVE_PROGRESS_REVIEW_AND_EVALUATION_LINK_EXACT_PAYLOAD.md
+
+6.
+2500_ERP_MBO_CYCLE_CLOSURE_CASE_EXACT_PAYLOAD.md
+
+7.
+2501_ERP_COMPANY_WIDE_MBO_VS_MANAGEMENT_OPERATIONS_BOUNDARY_RULE.md
+
+8.
+2502_ERP_COMPANY_WIDE_MBO_VS_EPM_BOUNDARY_RULE.md
+
+9.
+2503_ERP_COMPANY_WIDE_MBO_VS_EVALUATION_COORDINATION_BOUNDARY_RULE.md
+
+10.
+2504_ERP_COMPANY_WIDE_MBO_PAID_OPTION_UNRESOLVED_GAP_INVENTORY.md
+

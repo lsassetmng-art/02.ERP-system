@@ -1,0 +1,72 @@
+# ============================================================
+# ERP CRM OPTION EXACT PAYLOAD ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-610
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-15
+scope: erp.crm_option.exact_payload.root_navigation_rule
+component: crm-option-exact-payload-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+594_ERP_CRM_OPTION_EXACT_PAYLOAD_CURRENT_STATE.md
+
+2.
+595_ERP_CRM_OPTION_OBJECT_FAMILY_SET.md
+
+3.
+596_ERP_CRM_OPTION_EXACT_PAYLOAD_RULES.md
+
+4.
+597_ERP_CRM_OPTION_EXACT_PAYLOAD_CRM_CUSTOMER_ACCOUNT.md
+
+5.
+598_ERP_CRM_OPTION_EXACT_PAYLOAD_CRM_CUSTOMER_CONTACT.md
+
+6.
+599_ERP_CRM_OPTION_EXACT_PAYLOAD_CRM_INTERACTION_LOG.md
+
+7.
+600_ERP_CRM_OPTION_EXACT_PAYLOAD_CRM_INQUIRY_CASE.md
+
+8.
+601_ERP_CRM_OPTION_EXACT_PAYLOAD_SEGMENT_AND_LIFECYCLE.md
+
+9.
+602_ERP_CORE_LINKAGE_TO_CRM_OPTION_EXACT_BOUNDARY.md
+
+10.
+603_ERP_CRM_OPTION_ENABLEMENT_AWARE_PAYLOAD_RULE.md
+
+11.
+604_ERP_CRM_OPTION_AUTHORITY_AND_AUDIT_EXACTNESS.md
+
+12.
+605_ERP_CRM_OPTION_ANALYTICS_SURFACE_EXACTNESS.md
+
+13.
+606_ERP_CRM_OPTION_EXACT_OBJECT_LINKAGE_RULE.md
+
+14.
+607_ERP_CRM_OPTION_EXACT_PAYLOAD_SUMMARY.md
+
+15.
+608_ERP_CRM_OPTION_EXACT_PAYLOAD_ROOT_PATCH.md
+
+16.
+609_DESIGN_MASTER_INDEX_CRM_OPTION_EXACT_PAYLOAD_PATCH.md
+
+
+# INTERPRETATION RULE
+
+Read this set as the first exact object and payload
+continuation of the CRM paid option design line.
+

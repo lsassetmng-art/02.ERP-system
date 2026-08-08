@@ -1,0 +1,111 @@
+# ============================================================
+# ERP SCM IMPLEMENTATION READY AND ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2681
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.scm.implementation_ready_and_root_navigation_rule
+component: scm-implementation-ready-and-root-navigation-rule
+
+
+# IMPLEMENTATION READY CHECKLIST
+
+SCM may be treated as implementation-ready in this pass only when:
+- network node / inter-node transfer / supply commitment coordination / service-level exception / supply-risk payloads are fixed
+- purchase / sales / WMS / inventory boundary is fixed
+- request / response contracts are fixed
+- lifecycle and progression semantics are fixed
+- permission, screen, and reporting surfaces are fixed
+
+# REQUIRED READING ORDER
+
+1.
+2650_ERP_SCM_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CURRENT_STATE.md
+
+2.
+2651_ERP_SCM_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_POSITIONING.md
+
+3.
+2652_ERP_SCM_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CANONICAL_SCOPE.md
+
+4.
+2653_ERP_SCM_TRUTH_MAP.md
+
+5.
+2654_ERP_SCM_COMPLETION_TARGET.md
+
+6.
+2655_ERP_SCM_EXIT_CRITERIA.md
+
+7.
+2657_ERP_SCM_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+8.
+2658_ERP_SCM_OBJECT_FAMILY_SET.md
+
+9.
+2659_ERP_SUPPLY_NETWORK_NODE_REGISTRY_EXACT_PAYLOAD.md
+
+10.
+2660_ERP_INTER_NODE_TRANSFER_PLAN_CASE_EXACT_PAYLOAD.md
+
+11.
+2661_ERP_SUPPLY_COMMITMENT_COORDINATION_CASE_EXACT_PAYLOAD.md
+
+12.
+2662_ERP_SERVICE_LEVEL_EXCEPTION_AND_SUPPLY_RISK_EXACT_PAYLOAD.md
+
+13.
+2663_ERP_SCM_VS_PURCHASE_BOUNDARY_RULE.md
+
+14.
+2664_ERP_SCM_VS_SALES_BOUNDARY_RULE.md
+
+15.
+2665_ERP_SCM_VS_WMS_BOUNDARY_RULE.md
+
+16.
+2666_ERP_SCM_VS_INVENTORY_BOUNDARY_RULE.md
+
+17.
+2667_ERP_SCM_UNRESOLVED_GAP_INVENTORY.md
+
+18.
+2669_ERP_SCM_CONTRACT_STATEFLOW_CURRENT_STATE.md
+
+19.
+2670_ERP_SCM_REQUEST_RESPONSE_CONTRACTS.md
+
+20.
+2671_ERP_SCM_LIFECYCLE_AND_STATUSFLOW_RULE.md
+
+21.
+2672_ERP_TRANSFER_PLANNING_PROGRESSION_RULE.md
+
+22.
+2673_ERP_SERVICE_LEVEL_EXCEPTION_AND_RECOVERY_RULE.md
+
+23.
+2674_ERP_SUPPLY_RISK_INTERPRETATION_AND_MITIGATION_RULE.md
+
+24.
+2675_ERP_SCM_PRIORITY_SEQUENCE.md
+
+25.
+2677_ERP_SCM_COMPLETION_RULE_CURRENT_STATE.md
+
+26.
+2678_ERP_SCM_PERMISSION_AND_AUDIT_RULE.md
+
+27.
+2679_ERP_SCM_SCREEN_INVENTORY_AND_NAVIGATION.md
+
+28.
+2680_ERP_SCM_PRIMARY_UI_STATEFLOW_AND_REPORTING_RULE.md
+

@@ -1,0 +1,111 @@
+# ============================================================
+# ERP SALES IMPLEMENTATION READY AND ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2127
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.sales.implementation_ready_and_root_navigation_rule
+component: sales-implementation-ready-and-root-navigation-rule
+
+
+# IMPLEMENTATION READY CHECKLIST
+
+Sales core may be treated as implementation-ready in this pass only when:
+- quote / order / fulfillment / invoice request / correction payloads are fixed
+- inventory / accounting / management boundary is fixed
+- request / response contracts are fixed
+- lifecycle and progression semantics are fixed
+- permission, screen, and reporting surfaces are fixed
+
+# REQUIRED READING ORDER
+
+1.
+2096_ERP_SALES_CORE_EXACT_PAYLOAD_CURRENT_STATE.md
+
+2.
+2097_ERP_SALES_CORE_EXACT_PAYLOAD_POSITIONING.md
+
+3.
+2098_ERP_SALES_CORE_EXACT_PAYLOAD_CANONICAL_SCOPE.md
+
+4.
+2099_ERP_SALES_CORE_TRUTH_MAP.md
+
+5.
+2100_ERP_SALES_CORE_COMPLETION_TARGET.md
+
+6.
+2101_ERP_SALES_CORE_EXIT_CRITERIA.md
+
+7.
+2103_ERP_SALES_CORE_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+8.
+2104_ERP_SALES_CORE_OBJECT_FAMILY_SET.md
+
+9.
+2105_ERP_SALES_QUOTE_EXACT_PAYLOAD.md
+
+10.
+2106_ERP_SALES_ORDER_EXACT_PAYLOAD.md
+
+11.
+2107_ERP_SALES_FULFILLMENT_AND_INVOICE_REQUEST_EXACT_PAYLOAD.md
+
+12.
+2108_ERP_SALES_CORRECTION_CASE_EXACT_PAYLOAD.md
+
+13.
+2109_ERP_SALES_VS_INVENTORY_BOUNDARY_RULE.md
+
+14.
+2110_ERP_SALES_VS_ACCOUNTING_BOUNDARY_RULE.md
+
+15.
+2111_ERP_SALES_VS_MANAGEMENT_BOUNDARY_RULE.md
+
+16.
+2112_ERP_SALES_UNRESOLVED_GAP_INVENTORY.md
+
+17.
+2114_ERP_SALES_CONTRACT_STATEFLOW_CURRENT_STATE.md
+
+18.
+2115_ERP_SALES_REQUEST_RESPONSE_CONTRACTS.md
+
+19.
+2116_ERP_SALES_LIFECYCLE_AND_STATUSFLOW_RULE.md
+
+20.
+2117_ERP_SALES_QUOTE_TO_ORDER_CONVERSION_RULE.md
+
+21.
+2118_ERP_SALES_FULFILLMENT_AND_INVOICE_HANDOFF_RULE.md
+
+22.
+2119_ERP_SALES_CORRECTION_AND_REVERSAL_RULE.md
+
+23.
+2120_ERP_SALES_PRIORITY_SEQUENCE.md
+
+24.
+2122_ERP_SALES_COMPLETION_RULE_CURRENT_STATE.md
+
+25.
+2123_ERP_SALES_PERMISSION_AND_AUDIT_RULE.md
+
+26.
+2124_ERP_SALES_SCREEN_INVENTORY_AND_NAVIGATION.md
+
+27.
+2125_ERP_SALES_PRIMARY_UI_STATEFLOW_RULE.md
+
+28.
+2126_ERP_SALES_REPORTING_AND_DRILLDOWN_RULE.md
+

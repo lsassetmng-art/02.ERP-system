@@ -1,0 +1,51 @@
+# ============================================================
+# ERP BUSINESS DESIGN ROOT PATCH
+# ============================================================
+
+status: canonical-draft
+system: erp
+owner: Boss
+prepared_by: Zero
+
+purpose:
+Provides root-level patch guidance
+for integrating the ERP business design set
+into master navigation.
+
+recommended_entry_files:
+- 357_ERP_BUSINESS_DESIGN_CURRENT_STATE.md
+- 358_ERP_BUSINESS_DESIGN_SCOPE_AND_BOUNDARY.md
+- 359_ERP_BUSINESS_DESIGN_ROADMAP_DETAILED.md
+- 360_ERP_BUSINESS_DESIGN_NEXT_ACTIONS.md
+- 361_ERP_BUSINESS_UNRESOLVED_QUESTIONS.md
+- 362_ERP_BUSINESS_DESIGN_NAVIGATION_NOTE.md
+- 363_ERP_BUSINESS_OBJECT_CLASSIFICATION_FIRST_PASS.md
+- 364_ERP_BUSINESS_SALES_SUBDOMAIN_JUDGMENT.md
+- 365_ERP_BUSINESS_PURCHASE_SUBDOMAIN_JUDGMENT.md
+- 366_ERP_BUSINESS_INVENTORY_AND_MANUFACTURING_JUDGMENT.md
+- 367_ERP_BUSINESS_HANDOFF_LAYER_NOTE.md
+- 368_ERP_BUSINESS_FIRST_PASS_SUMMARY.md
+- 369_ERP_BUSINESS_ARCHITECTURE_OVERVIEW.md
+- 370_ERP_BUSINESS_SALES_ARCHITECTURE.md
+- 371_ERP_BUSINESS_PURCHASE_ARCHITECTURE.md
+- 372_ERP_BUSINESS_INVENTORY_MANUFACTURING_ARCHITECTURE.md
+- 373_ERP_BUSINESS_HANDOFF_ARCHITECTURE.md
+- 374_ERP_BUSINESS_ARCHITECTURE_SUMMARY.md
+- 375_ERP_BUSINESS_AUTHORITY_MATRIX.md
+- 376_ERP_BUSINESS_RESPONSIBILITY_MATRIX.md
+- 377_ERP_BUSINESS_OBJECT_ROLE_REGISTRY.md
+- 378_ERP_BUSINESS_BOUNDARY_DECISION_NOTE.md
+- 379_ERP_BUSINESS_NEXT_ACTIONS_AFTER_MATRIX.md
+
+recommended_navigation_role:
+Use these files as the ERP business design expansion set
+after frozen authority registry work and audit expansion.
+
+recommended_link_targets:
+- 368_ERP_BUSINESS_FIRST_PASS_SUMMARY.md
+- 374_ERP_BUSINESS_ARCHITECTURE_SUMMARY.md
+- 379_ERP_BUSINESS_NEXT_ACTIONS_AFTER_MATRIX.md
+
+conclusion:
+Root navigation should treat the business design set
+as the formal business architecture expansion layer.

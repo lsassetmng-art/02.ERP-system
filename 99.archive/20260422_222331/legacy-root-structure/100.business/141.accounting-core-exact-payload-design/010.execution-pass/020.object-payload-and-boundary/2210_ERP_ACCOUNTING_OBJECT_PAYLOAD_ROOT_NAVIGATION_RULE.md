@@ -1,0 +1,51 @@
+# ============================================================
+# ERP ACCOUNTING OBJECT PAYLOAD ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2210
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.accounting.object_payload.root_navigation_rule
+component: accounting-object-payload-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2199_ERP_ACCOUNTING_CORE_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+2.
+2200_ERP_ACCOUNTING_CORE_OBJECT_FAMILY_SET.md
+
+3.
+2201_ERP_ACCOUNTING_DOCUMENT_DRAFT_EXACT_PAYLOAD.md
+
+4.
+2202_ERP_JOURNAL_BATCH_EXACT_PAYLOAD.md
+
+5.
+2203_ERP_RECEIVABLE_PAYABLE_POSITION_EXACT_PAYLOAD.md
+
+6.
+2204_ERP_CLOSE_CYCLE_AND_CORRECTION_EXACT_PAYLOAD.md
+
+7.
+2205_ERP_ACCOUNTING_VS_SALES_BOUNDARY_RULE.md
+
+8.
+2206_ERP_ACCOUNTING_VS_PURCHASE_BOUNDARY_RULE.md
+
+9.
+2207_ERP_ACCOUNTING_VS_INVENTORY_BOUNDARY_RULE.md
+
+10.
+2208_ERP_ACCOUNTING_VS_MANAGEMENT_BOUNDARY_RULE.md
+
+11.
+2209_ERP_ACCOUNTING_UNRESOLVED_GAP_INVENTORY.md
+

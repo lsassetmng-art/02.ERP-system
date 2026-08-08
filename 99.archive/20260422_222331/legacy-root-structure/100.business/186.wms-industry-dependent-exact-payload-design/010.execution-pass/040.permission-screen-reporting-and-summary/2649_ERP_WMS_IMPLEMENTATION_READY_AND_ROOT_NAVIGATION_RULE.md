@@ -1,0 +1,111 @@
+# ============================================================
+# ERP WMS IMPLEMENTATION READY AND ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2649
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.wms.implementation_ready_and_root_navigation_rule
+component: wms-implementation-ready-and-root-navigation-rule
+
+
+# IMPLEMENTATION READY CHECKLIST
+
+WMS may be treated as implementation-ready in this pass only when:
+- warehouse task / bin allocation / wave / receiving dock / exception payloads are fixed
+- inventory / sales / purchase / SCM boundary is fixed
+- request / response contracts are fixed
+- lifecycle and progression semantics are fixed
+- permission, screen, and reporting surfaces are fixed
+
+# REQUIRED READING ORDER
+
+1.
+2618_ERP_WMS_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CURRENT_STATE.md
+
+2.
+2619_ERP_WMS_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_POSITIONING.md
+
+3.
+2620_ERP_WMS_INDUSTRY_DEPENDENT_EXACT_PAYLOAD_CANONICAL_SCOPE.md
+
+4.
+2621_ERP_WMS_TRUTH_MAP.md
+
+5.
+2622_ERP_WMS_COMPLETION_TARGET.md
+
+6.
+2623_ERP_WMS_EXIT_CRITERIA.md
+
+7.
+2625_ERP_WMS_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+8.
+2626_ERP_WMS_OBJECT_FAMILY_SET.md
+
+9.
+2627_ERP_WAREHOUSE_TASK_CASE_EXACT_PAYLOAD.md
+
+10.
+2628_ERP_BIN_ALLOCATION_CASE_EXACT_PAYLOAD.md
+
+11.
+2629_ERP_PICK_PACK_WAVE_AND_RECEIVING_DOCK_EXECUTION_EXACT_PAYLOAD.md
+
+12.
+2630_ERP_WAREHOUSE_EXCEPTION_CASE_EXACT_PAYLOAD.md
+
+13.
+2631_ERP_WMS_VS_INVENTORY_BOUNDARY_RULE.md
+
+14.
+2632_ERP_WMS_VS_SALES_BOUNDARY_RULE.md
+
+15.
+2633_ERP_WMS_VS_PURCHASE_BOUNDARY_RULE.md
+
+16.
+2634_ERP_WMS_VS_SCM_BOUNDARY_RULE.md
+
+17.
+2635_ERP_WMS_UNRESOLVED_GAP_INVENTORY.md
+
+18.
+2637_ERP_WMS_CONTRACT_STATEFLOW_CURRENT_STATE.md
+
+19.
+2638_ERP_WMS_REQUEST_RESPONSE_CONTRACTS.md
+
+20.
+2639_ERP_WMS_LIFECYCLE_AND_STATUSFLOW_RULE.md
+
+21.
+2640_ERP_WAREHOUSE_TASK_TO_WAVE_PROGRESSION_RULE.md
+
+22.
+2641_ERP_RECEIVING_DOCK_AND_PUTAWAY_EXECUTION_RULE.md
+
+23.
+2642_ERP_WAREHOUSE_EXCEPTION_AND_RECOVERY_RULE.md
+
+24.
+2643_ERP_WMS_PRIORITY_SEQUENCE.md
+
+25.
+2645_ERP_WMS_COMPLETION_RULE_CURRENT_STATE.md
+
+26.
+2646_ERP_WMS_PERMISSION_AND_AUDIT_RULE.md
+
+27.
+2647_ERP_WMS_SCREEN_INVENTORY_AND_NAVIGATION.md
+
+28.
+2648_ERP_WMS_PRIMARY_UI_STATEFLOW_AND_REPORTING_RULE.md
+

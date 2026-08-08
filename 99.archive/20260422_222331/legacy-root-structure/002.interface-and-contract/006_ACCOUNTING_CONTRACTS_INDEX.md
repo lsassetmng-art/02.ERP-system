@@ -1,0 +1,29 @@
+# ============================================================
+# ACCOUNTING CONTRACTS INDEX
+# ============================================================
+
+status: canonical-draft
+system: erp
+owner: Boss
+prepared_by: Zero
+
+related_common_docs:
+- 014_ERP_EXACT_PAYLOAD_NAMING_STANDARD.md
+- 015_ERP_EXACT_RESPONSE_FIELD_STANDARD.md
+- 017_ERP_EXACT_QUERY_RESPONSE_STANDARD.md
+- 018_ERP_EXACT_ACTION_RESPONSE_STANDARD.md
+- 019_ERP_EXACT_ERROR_RESPONSE_STANDARD.md
+
+accounting_contract_files:
+- 027_ERP_EXACT_PAYLOAD_ACCOUNTING_SETTLEMENT_CREATE.md
+- 028_ERP_EXACT_PAYLOAD_ACCOUNTING_PERIOD_CLOSE.md
+- 029_ERP_EXACT_PAYLOAD_ACCOUNTING_PERIOD_REOPEN_REQUEST.md
+- 034_ERP_EXACT_QUERY_AR_DETAIL.md
+- 035_ERP_EXACT_QUERY_JOURNAL_DETAIL.md
+- 041_ERP_EXACT_QUERY_SETTLEMENTS_LIST.md
+- 042_ERP_EXACT_QUERY_SETTLEMENT_DETAIL.md
+- 043_ERP_EXACT_QUERY_JOURNALS_LIST.md
+- 044_ERP_EXACT_QUERY_PERIODS_LIST.md
+
+purpose:
+Indexes accounting-facing action and query contracts.

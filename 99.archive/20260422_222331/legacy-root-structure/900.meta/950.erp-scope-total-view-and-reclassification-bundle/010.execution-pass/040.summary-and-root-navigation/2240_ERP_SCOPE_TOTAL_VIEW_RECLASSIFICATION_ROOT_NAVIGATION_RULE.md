@@ -1,0 +1,72 @@
+# ============================================================
+# ERP SCOPE TOTAL VIEW RECLASSIFICATION ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2240
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.scope_total_view_reclassification.root_navigation_rule
+component: scope-total-view-reclassification-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2224_ERP_SCOPE_TOTAL_VIEW_RECLASSIFICATION_CURRENT_STATE.md
+
+2.
+2225_ERP_SCOPE_TOTAL_VIEW_RECLASSIFICATION_POSITIONING.md
+
+3.
+2226_ERP_SCOPE_RECLASSIFICATION_RULE.md
+
+4.
+2227_ERP_TOTAL_SCOPE_LEDGER.md
+
+5.
+2228_ERP_CORE_MODULE_CATALOG.md
+
+6.
+2229_ERP_PAID_OPTION_MODULE_CATALOG.md
+
+7.
+2230_ERP_INDUSTRY_DEPENDENT_MODULE_CATALOG.md
+
+8.
+2231_ERP_EXTERNAL_LINKED_BUSINESS_APP_BOUNDARY_RULE.md
+
+9.
+2232_ERP_FUTURE_EXTENSION_CANDIDATE_CATALOG.md
+
+10.
+2233_ERP_SCOPE_PROGRESS_STATUS_MATRIX.md
+
+11.
+2234_ERP_SCOPE_DEEPEN_PRIORITY_ROADMAP.md
+
+12.
+2235_ERP_ASSET_MANAGEMENT_CLASSIFICATION_NOTE.md
+
+13.
+2236_ERP_MANUFACTURING_AND_INDUSTRIAL_EXTENSION_NOTE.md
+
+14.
+2237_ERP_OTHER_CANDIDATE_HANDLING_NOTE.md
+
+15.
+2238_ERP_SCOPE_TOTAL_VIEW_RECLASSIFICATION_INTEGRATED_SUMMARY.md
+
+16.
+2239_DESIGN_MASTER_INDEX_SCOPE_TOTAL_VIEW_RECLASSIFICATION_PATCH.md
+
+
+# INTERPRETATION RULE
+
+Read this set as the canonical ERP whole-scope total-view
+and reclassification bundle for the current design stage.
+

@@ -1,0 +1,27 @@
+# ============================================================
+# ERP SHIFTMANAGER OBJECT MODEL CURRENT STATE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-801
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-15
+scope: erp.shiftmanager_option.object_model.current_state
+component: shiftmanager-object-model-current-state
+
+
+# ABSTRACT
+
+Defines the current state for the first exact object
+model and payload pass for the ShiftManager paid option.
+
+This pass fixes:
+- object family separation
+- field exactness
+- plan / preference / assignment / swap distinction
+- publication treatment
+

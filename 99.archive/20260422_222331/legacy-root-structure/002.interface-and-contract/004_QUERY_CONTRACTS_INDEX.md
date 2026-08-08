@@ -1,0 +1,31 @@
+# ============================================================
+# QUERY CONTRACTS INDEX
+# ============================================================
+
+status: canonical-draft
+system: erp
+owner: Boss
+prepared_by: Zero
+
+shared_reference_docs:
+- 015_ERP_EXACT_RESPONSE_FIELD_STANDARD.md
+- 017_ERP_EXACT_QUERY_RESPONSE_STANDARD.md
+- 019_ERP_EXACT_ERROR_RESPONSE_STANDARD.md
+
+query_contract_files:
+- 031_ERP_EXACT_QUERY_APPROVAL_PENDING.md
+- 032_ERP_EXACT_QUERY_APPROVAL_DETAIL.md
+- 033_ERP_EXACT_QUERY_EXECUTION_DETAIL.md
+- 034_ERP_EXACT_QUERY_AR_DETAIL.md
+- 035_ERP_EXACT_QUERY_JOURNAL_DETAIL.md
+- 036_ERP_EXACT_QUERY_DASHBOARD_CONTROL_TOWER.md
+- 038_ERP_EXACT_QUERY_DOCUMENTS_LIST.md
+- 039_ERP_EXACT_QUERY_DOCUMENT_DETAIL.md
+- 040_ERP_EXACT_QUERY_DOCUMENT_HISTORY.md
+- 041_ERP_EXACT_QUERY_SETTLEMENTS_LIST.md
+- 042_ERP_EXACT_QUERY_SETTLEMENT_DETAIL.md
+- 043_ERP_EXACT_QUERY_JOURNALS_LIST.md
+- 044_ERP_EXACT_QUERY_PERIODS_LIST.md
+
+purpose:
+Indexes exact contract documents for ERP read-only query endpoints.

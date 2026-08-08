@@ -1,0 +1,42 @@
+# ============================================================
+# ERP MANAGEMENT OPERATIONS EVALUATION CONTRACT STATEFLOW ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2268
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.management_operations_evaluation.contract_stateflow.root_navigation_rule
+component: management-operations-evaluation-contract-stateflow-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2260_ERP_MANAGEMENT_OPERATIONS_EVALUATION_CONTRACT_STATEFLOW_CURRENT_STATE.md
+
+2.
+2261_ERP_MANAGEMENT_OPERATIONS_EVALUATION_REQUEST_RESPONSE_CONTRACTS.md
+
+3.
+2262_ERP_MANAGEMENT_OPERATIONS_EVALUATION_LIFECYCLE_AND_STATUSFLOW_RULE.md
+
+4.
+2263_ERP_MANAGEMENT_REVIEW_TO_APPROVAL_PROGRESSION_RULE.md
+
+5.
+2264_ERP_EXECUTION_REQUEST_AND_CONTROLLED_ROUTING_RULE.md
+
+6.
+2265_ERP_EXCEPTION_ESCALATION_AND_RESOLUTION_RULE.md
+
+7.
+2266_ERP_PERFORMANCE_EVALUATION_COORDINATION_RULE.md
+
+8.
+2267_ERP_MANAGEMENT_OPERATIONS_EVALUATION_PRIORITY_SEQUENCE.md
+

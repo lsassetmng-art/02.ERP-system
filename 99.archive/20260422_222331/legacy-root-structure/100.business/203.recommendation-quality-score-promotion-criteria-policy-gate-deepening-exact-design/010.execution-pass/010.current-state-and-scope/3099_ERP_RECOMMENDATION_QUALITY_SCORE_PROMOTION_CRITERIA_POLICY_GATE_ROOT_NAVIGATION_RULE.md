@@ -1,0 +1,36 @@
+# ============================================================
+# ERP RECOMMENDATION QUALITY SCORE PROMOTION CRITERIA POLICY GATE ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-3099
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.recommendation_quality_score_promotion_criteria_policy_gate.root_navigation_rule
+component: recommendation-quality-score-promotion-criteria-policy-gate-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+3093_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_CURRENT_STATE.md
+
+2.
+3094_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_POSITIONING.md
+
+3.
+3095_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_CANONICAL_SCOPE.md
+
+4.
+3096_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_OWNERSHIP_MAP.md
+
+5.
+3097_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_COMPLETION_TARGET.md
+
+6.
+3098_ERP_RECOMMENDATION_QUALITY_SCORE_PROMOTION_CRITERIA_POLICY_GATE_EXIT_CRITERIA.md
+

@@ -1,0 +1,36 @@
+# ============================================================
+# ERP DRIFT THRESHOLD TUNING TRUST DECAY AUDIT ESCALATION AUTOMATION ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-3291
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.drift_threshold_tuning_trust_decay_audit_escalation_automation.root_navigation_rule
+component: drift-threshold-tuning-trust-decay-audit-escalation-automation-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+3285_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_CURRENT_STATE.md
+
+2.
+3286_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_POSITIONING.md
+
+3.
+3287_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_CANONICAL_SCOPE.md
+
+4.
+3288_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_OWNERSHIP_MAP.md
+
+5.
+3289_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_COMPLETION_TARGET.md
+
+6.
+3290_ERP_DRIFT_THRESHOLD_TUNING_TRUST_DECAY_AUDIT_ESCALATION_AUTOMATION_EXIT_CRITERIA.md
+

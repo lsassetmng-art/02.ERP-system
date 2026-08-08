@@ -1,0 +1,7 @@
+# ERP SFA Paid Option Object Model and Exact Payload Overview
+
+This folder contains the first exact object and payload
+design pass for the SFA paid option.
+
+Expected document range:
+- 724 to 731

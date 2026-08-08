@@ -1,0 +1,48 @@
+# ============================================================
+# ERP ASSET MANAGEMENT OBJECT PAYLOAD ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2298
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.asset_management.object_payload.root_navigation_rule
+component: asset-management-object-payload-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2288_ERP_ASSET_MANAGEMENT_OBJECT_EXACTNESS_CURRENT_STATE.md
+
+2.
+2289_ERP_ASSET_MANAGEMENT_OBJECT_FAMILY_SET.md
+
+3.
+2290_ERP_ASSET_MASTER_EXACT_PAYLOAD.md
+
+4.
+2291_ERP_ASSET_ACQUISITION_CASE_EXACT_PAYLOAD.md
+
+5.
+2292_ERP_ASSET_DEPRECIATION_CYCLE_AND_TRANSFER_EXACT_PAYLOAD.md
+
+6.
+2293_ERP_ASSET_DISPOSAL_CASE_EXACT_PAYLOAD.md
+
+7.
+2294_ERP_ASSET_MANAGEMENT_VS_PURCHASE_BOUNDARY_RULE.md
+
+8.
+2295_ERP_ASSET_MANAGEMENT_VS_ACCOUNTING_BOUNDARY_RULE.md
+
+9.
+2296_ERP_ASSET_MANAGEMENT_VS_MANAGEMENT_BOUNDARY_RULE.md
+
+10.
+2297_ERP_ASSET_MANAGEMENT_UNRESOLVED_GAP_INVENTORY.md
+

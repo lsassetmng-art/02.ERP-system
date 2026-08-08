@@ -1,0 +1,36 @@
+# ============================================================
+# ERP OBJECTIVE TUNING DELEGATION OUTCOME LEDGER ESCALATION OVERRIDE ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-3227
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.objective_tuning_delegation_outcome_ledger_escalation_override.root_navigation_rule
+component: objective-tuning-delegation-outcome-ledger-escalation-override-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+3221_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_CURRENT_STATE.md
+
+2.
+3222_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_POSITIONING.md
+
+3.
+3223_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_CANONICAL_SCOPE.md
+
+4.
+3224_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_OWNERSHIP_MAP.md
+
+5.
+3225_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_COMPLETION_TARGET.md
+
+6.
+3226_ERP_OBJECTIVE_TUNING_DELEGATION_OUTCOME_LEDGER_ESCALATION_OVERRIDE_EXIT_CRITERIA.md
+

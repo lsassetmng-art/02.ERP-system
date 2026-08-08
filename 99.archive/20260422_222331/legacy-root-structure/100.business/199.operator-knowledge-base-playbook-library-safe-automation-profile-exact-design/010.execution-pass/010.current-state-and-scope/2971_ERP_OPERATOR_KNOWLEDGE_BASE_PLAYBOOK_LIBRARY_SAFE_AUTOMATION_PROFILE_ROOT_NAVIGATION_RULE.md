@@ -1,0 +1,36 @@
+# ============================================================
+# ERP OPERATOR KNOWLEDGE BASE PLAYBOOK LIBRARY SAFE AUTOMATION PROFILE ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-2971
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.operator_knowledge_base_playbook_library_safe_automation_profile.root_navigation_rule
+component: operator-knowledge-base-playbook-library-safe-automation-profile-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+2965_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_CURRENT_STATE.md
+
+2.
+2966_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_POSITIONING.md
+
+3.
+2967_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_CANONICAL_SCOPE.md
+
+4.
+2968_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_OWNERSHIP_MAP.md
+
+5.
+2969_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_COMPLETION_TARGET.md
+
+6.
+2970_ERP_OPERATOR_KNOWLEDGE_BASE_PLAYBOOK_LIBRARY_SAFE_AUTOMATION_PROFILE_EXIT_CRITERIA.md
+

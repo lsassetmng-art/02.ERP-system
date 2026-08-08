@@ -1,0 +1,24 @@
+# ============================================================
+# ERP BUSINESS CORE ALIGNMENT CURRENT STATE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-1541
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-16
+scope: erp.business_core.alignment.current_state
+component: business-core-alignment-current-state
+
+
+# ABSTRACT
+
+Defines the current state for the contract, status,
+exception, and handoff alignment pass of business-core execution.
+
+The key need is to remove semantic drift
+between module-local business-core exactness rules.
+

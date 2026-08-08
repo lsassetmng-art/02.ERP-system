@@ -1,0 +1,69 @@
+# ============================================================
+# ERP CRM OPTION REQUEST RESPONSE EXACT CONTRACTS ROOT NAVIGATION RULE
+# ============================================================
+
+status: canonical
+version: 1.0
+compatibility: STRICT
+system: erp
+document_id: ERP-V3-626
+owner: Boss
+prepared_by: Zero
+last_updated: 2026-04-15
+scope: erp.crm_option.request_response_exact_contracts.root_navigation_rule
+component: crm-option-request-response-exact-contracts-root-navigation-rule
+
+
+# REQUIRED READING ORDER
+
+1.
+611_ERP_CRM_OPTION_REQUEST_RESPONSE_EXACT_CONTRACTS_CURRENT_STATE.md
+
+2.
+612_ERP_CRM_OPTION_API_CONTRACT_PRINCIPLES.md
+
+3.
+613_ERP_CRM_OPTION_COMMON_REQUEST_RESPONSE_ENVELOPE.md
+
+4.
+614_ERP_CRM_OPTION_ACCOUNT_LIST_AND_DETAIL_CONTRACT.md
+
+5.
+615_ERP_CRM_OPTION_ACCOUNT_CREATE_AND_UPDATE_CONTRACT.md
+
+6.
+616_ERP_CRM_OPTION_CONTACT_LIST_AND_WRITE_CONTRACT.md
+
+7.
+617_ERP_CRM_OPTION_INTERACTION_LIST_AND_CREATE_CONTRACT.md
+
+8.
+618_ERP_CRM_OPTION_INQUIRY_LIST_DETAIL_WRITE_CONTRACT.md
+
+9.
+619_ERP_CRM_OPTION_SEGMENT_AND_LIFECYCLE_WRITE_CONTRACT.md
+
+10.
+620_ERP_CRM_OPTION_OWNER_REASSIGN_ARCHIVE_CONTRACT.md
+
+11.
+621_ERP_CRM_OPTION_MERGE_CONTRACT.md
+
+12.
+622_ERP_CRM_OPTION_CORE_LINKAGE_REFERENCE_CONTRACT.md
+
+13.
+623_ERP_CRM_OPTION_PERMISSION_AND_ENABLEMENT_ERROR_CONTRACT.md
+
+14.
+624_ERP_CRM_OPTION_AUDIT_REFLECTION_IN_RESPONSE_CONTRACT.md
+
+15.
+625_ERP_CRM_OPTION_REQUEST_RESPONSE_EXACT_CONTRACTS_SUMMARY.md
+
+
+# INTERPRETATION RULE
+
+Read this set as the first request/response exact
+contract continuation under the CRM paid option design line.
+
