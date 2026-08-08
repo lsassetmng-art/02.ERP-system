@@ -1,0 +1,5 @@
+action	source	target	note
+moved	/data/data/com.termux/files/home/02.ERP-system/51.audit/02.internal-control	/data/data/com.termux/files/home/02.ERP-system/51.audit/04.internal-control	directory moved
+moved	/data/data/com.termux/files/home/02.ERP-system/51.audit/03.compliance-audit	/data/data/com.termux/files/home/02.ERP-system/51.audit/05.compliance-audit	directory moved
+moved	/data/data/com.termux/files/home/02.ERP-system/51.audit/04.operational-review	/data/data/com.termux/files/home/02.ERP-system/51.audit/03.business-audit	directory moved
+moved	/data/data/com.termux/files/home/02.ERP-system/51.audit/05.remediation-tracking	/data/data/com.termux/files/home/02.ERP-system/51.audit/06.remediation-tracking	directory moved
