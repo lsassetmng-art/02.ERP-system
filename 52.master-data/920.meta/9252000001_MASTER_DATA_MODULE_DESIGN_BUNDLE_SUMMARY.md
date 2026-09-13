@@ -31,3 +31,17 @@ covers:
 - multilingual UI
 - offline-first / local queue / online sync
 - Business schema / Business AIWorker interface
+
+- 9252000010_P0_MASTER_DATA_DB_MIGRATION_PERSISTENCE_EXACT.md
+
+covers:
+- P0 DB migration persistence contract
+- 04.ERP-development/52.master-data/db implementation root
+- psql / DATABASE_URL controlled execution
+- forward migration / read-only adoption verification separation
+- current live DB forward replay prohibition
+- PRE_P0_EXACT / P0_POST_STATE / UNKNOWN_OR_PARTIAL classification
+- DROP CASCADE / automatic retry / automatic down migration prohibition
+- public VIEW_ONLY persistence
+- P0 #1-#11 authority persistence
+- P1 procurement quantity HOLD until 04 persistence acceptance
