@@ -40,3 +40,13 @@ Draft Reference
 ## 5. Boundary rule
 Master Data owns shared reference identity and shared lookup truth.
 Operational modules own business transaction truth that references these identities.
+
+# P0 PHYSICAL AUTHORITY EXACT REFERENCE
+
+p0_exact_reference:
+- 920.meta/9252000009_P0_MASTER_DATA_PHYSICAL_AUTHORITY_UI_OFFLINE_AIWORKER_EXACT.md
+
+binding_rule:
+- shared ERP master physical authority is master_data.
+- master_record_id is the shared ERP master identity.
+- public schema is VIEW_ONLY.

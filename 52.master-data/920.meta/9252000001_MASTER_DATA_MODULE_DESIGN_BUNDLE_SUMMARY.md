@@ -18,3 +18,16 @@ generated_docs:
 - 110.infrastructure/1152000001_MASTER_DATA_INFRASTRUCTURE_AND_STORAGE.md
 - 120.implementation/1252000001_MASTER_DATA_SCREEN_API_AND_STATE_IMPLEMENTATION_DESIGN.md
 - 130.development/1352000001_MASTER_DATA_DEVELOPMENT_PLAN_AND_ACCEPTANCE.md
+
+# P0 MASTER DATA PHYSICAL AUTHORITY ADDITION
+
+active_exact_design:
+- 9252000009_P0_MASTER_DATA_PHYSICAL_AUTHORITY_UI_OFFLINE_AIWORKER_EXACT.md
+
+covers:
+- master_data physical canonical authority
+- public schema view-only boundary
+- CommonOS HTML screen canon
+- multilingual UI
+- offline-first / local queue / online sync
+- Business schema / Business AIWorker interface
