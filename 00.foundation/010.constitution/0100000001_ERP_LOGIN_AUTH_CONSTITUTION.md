@@ -190,3 +190,55 @@ Foundation must not take ownership of source-module business permission meaning.
 
 P1 Procurement Quantity remains HOLD until the ERP login/authentication
 foundation has been designed, implemented, validated, and accepted.
+
+## Canonical extension: company roles and service actors
+
+ROLE_TAXONOMY_CANONICAL_EXTENSION=DEFINED
+
+A Company Membership may hold multiple simultaneously effective
+company-scoped role assignments.
+
+Company membership alone does not grant module business authority.
+
+The common human company roles are:
+
+- COMPANY_SYSTEM_ADMIN
+- COMPANY_ADMIN
+- COMPANY_STAFF
+
+These roles do not replace module-specific business or approval roles.
+
+COMPANY_SYSTEM_ADMIN is company-scoped administrative authority.
+It is not a system-scope ERP platform role.
+
+COMPANY_ADMIN is company-scoped management-side authority.
+It does not automatically imply every module business permission.
+
+COMPANY_STAFF is a minimal common company-user role.
+It must not automatically grant accounting, finance, sales, purchasing,
+inventory, HR, or other module business authority.
+
+Module-specific business and approval roles are additive and may be assigned
+in multiples to the same Company Membership.
+
+00.foundation owns the common role/permission/assignment framework.
+
+Each source business module owns:
+
+- its module-specific business role catalog
+- its module-specific approval role catalog
+- its module-specific permission semantics
+- its role-to-permission business meaning
+
+A source business module must not redefine authentication, Login Account,
+Company Membership, common role-assignment mechanics, or session truth.
+
+AI Worker and other non-human ERP actors must not authenticate as a human
+Login Account.
+
+AI Worker ERP execution requires an explicit Service Identity,
+explicit company access, explicit service role assignment, and auditable
+actor attribution.
+
+Human identity and service identity must remain distinguishable throughout
+authentication, authorization, business execution, and audit evidence.

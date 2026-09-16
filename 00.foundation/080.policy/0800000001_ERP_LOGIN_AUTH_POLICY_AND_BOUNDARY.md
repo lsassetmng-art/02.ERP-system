@@ -105,3 +105,39 @@ Offline mode cannot:
 Physical provider selection is deferred.
 
 Provider choice must conform to this canonical contract rather than redefine it.
+
+## Canonical extension: company role policy
+
+Company Membership may carry multiple effective roles.
+
+The following common company role codes are reserved:
+
+- COMPANY_SYSTEM_ADMIN
+- COMPANY_ADMIN
+- COMPANY_STAFF
+
+Policy:
+
+- COMPANY_SYSTEM_ADMIN is company scope, not global system scope
+- COMPANY_ADMIN does not automatically grant every module permission
+- COMPANY_STAFF grants no module-specific business privilege by default
+- module-specific business authority requires explicit module role/permission
+- approval authority must be explicit
+- role combinations remain subject to separation-of-duties policy
+- deny by default remains mandatory
+
+Module-specific role catalogs belong to their source business modules.
+
+## Canonical extension: Service Identity policy
+
+AI Worker authentication is required for protected ERP execution.
+
+Policy:
+
+- human Login Account impersonation by AI Worker is prohibited
+- Service Identity company access is explicit only
+- Service Identity authorization uses least privilege
+- Service Identity must be independently suspendable/revocable
+- raw service credentials must not appear in logs or business payloads
+- human-initiated service execution retains requested_by attribution
+- autonomous execution still retains Service Identity attribution

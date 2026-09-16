@@ -126,3 +126,41 @@ After successful authentication/company selection:
 - otherwise use configured ERP home/default route
 
 Open redirect behavior is prohibited.
+
+## Canonical extension: human role administration
+
+The administration UI/API must support:
+
+- viewing Company Membership
+- assigning multiple company-scoped roles
+- grouping module roles by source module
+- distinguishing business and approval roles
+- showing administrative roles separately
+- displaying effective and expired assignments
+- preventing duplicate overlapping assignments
+
+COMPANY_STAFF must not be presented as equivalent to all module access.
+
+Role/permission administration must preserve source-module ownership of
+module-specific permission semantics.
+
+## Canonical extension: AI Worker administration
+
+AI Worker has no human login screen.
+
+Implementation must provide controlled administration for:
+
+- Service Identity lifecycle
+- Service Credential lifecycle
+- explicit company access
+- Service Role Assignment
+- suspension/revocation
+- credential rotation
+- audit attribution
+
+Protected service requests must resolve to execution_actor_context before
+business API execution.
+
+The physical provider, physical schema, secret storage product, and credential
+transport remain implementation decisions requiring separate canonical
+physical design acceptance.

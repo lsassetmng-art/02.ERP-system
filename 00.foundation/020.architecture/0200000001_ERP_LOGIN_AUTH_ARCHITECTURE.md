@@ -156,3 +156,71 @@ No physical database schema, table name, authentication provider, token format,
 or password hashing implementation is canonicalized by this architecture file.
 
 Those decisions require implementation review after logical acceptance.
+
+## Canonical extension: role taxonomy architecture
+
+Human company authorization resolves through:
+
+Login Account
+-> Company Membership
+-> zero or more effective company-scoped role assignments
+-> role permissions
+-> permission decision
+
+Role scope and role category are independent dimensions.
+
+scope_type:
+
+- system
+- company
+
+role_category:
+
+- administrative
+- business
+- approval
+- audit
+- system
+- service
+
+A module-specific role carries a module association.
+
+Cross-module/common administrative roles may have no module association.
+
+Examples of module role families include:
+
+- accounting business roles
+- finance business roles
+- sales business roles
+- purchasing/procurement business roles
+- inventory business roles
+- HR business roles
+- module-specific approval roles
+
+These are role families, not a closed hard-coded list.
+
+## Canonical extension: service actor architecture
+
+AI Worker uses the non-human actor path:
+
+Service Identity
+-> explicit Service Company Access
+-> Service Role Assignment
+-> shared Permission Definition
+-> authorization decision
+-> ERP operation
+
+Service actors reuse the common permission catalog and authorization engine.
+They do not create a competing permission system.
+
+Human role assignment and service role assignment remain separate.
+
+AI Worker must not impersonate a human Login Account.
+
+A human-requested AI Worker operation preserves both:
+
+- effective actor = Service Identity
+- requested_by = initiating human Login Account
+
+An autonomous service operation may have no human requested_by value,
+but the Service Identity remains mandatory.

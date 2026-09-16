@@ -137,3 +137,33 @@ Security audit evidence must identify where available:
 - security event category
 
 Credential secret values are prohibited from audit payloads.
+
+## Canonical extension: actor and company context integration
+
+All protected internal ERP integrations consume a trusted
+execution_actor_context.
+
+The context distinguishes:
+
+- HUMAN actor
+- SERVICE actor
+- selected/authorized company
+- initiating human requester when applicable
+
+integration.my_company_id() remains an interface boundary.
+
+It must resolve company context from trusted authenticated and authorized
+execution context.
+
+It must not:
+
+- accept untrusted client company_id as authority
+- choose an arbitrary company when multiple companies are available
+- infer Service Identity access from a human Company Membership
+- collapse Service Identity into Login Account identity
+
+Service integrations must propagate Service Identity and requested_by
+attribution without exposing raw credentials.
+
+Module APIs consume permissions from the common authorization framework while
+the source module remains authority for its own permission semantics.

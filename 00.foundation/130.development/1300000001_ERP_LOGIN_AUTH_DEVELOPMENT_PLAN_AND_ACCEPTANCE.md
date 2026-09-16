@@ -111,3 +111,34 @@ P1 Procurement Quantity remains HOLD until the above login/auth implementation
 has been accepted.
 
 Canonical design completion alone does not open P1.
+
+## Canonical extension acceptance criteria
+
+Human role acceptance:
+
+- one Company Membership can hold multiple effective roles
+- duplicate overlapping same-role assignment is rejected
+- COMPANY_SYSTEM_ADMIN remains company-scoped
+- COMPANY_STAFF alone grants no module-specific business permission
+- accounting-only role cannot exercise unrelated module permission
+- approval permission requires explicit applicable role/permission
+- combined module roles resolve deterministically
+- revoked or expired role grants no authority
+
+Service actor acceptance:
+
+- AI Worker human login is rejected
+- inactive Service Identity authentication is rejected
+- missing Service Company Access denies company operation
+- expired Service Company Access denies company operation
+- missing Service Role Assignment denies protected operation
+- unrelated Service Role permission denies operation
+- human-initiated AI Worker operation preserves requested_by
+- autonomous operation preserves Service Identity actor
+- raw service credential is absent from logs
+- actor_type HUMAN and SERVICE remain distinguishable
+- Service Identity cannot use membership_role_assignment
+- human Login Account cannot use service_role_assignment
+
+Canonical acceptance must occur before physical provider/schema decisions are
+implemented.

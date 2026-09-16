@@ -107,3 +107,45 @@ If connectivity is lost after authentication:
 - company switch is blocked
 - login/logout/account-management mutations are unavailable
 - sync requires server-side revalidation after reconnection
+
+## Canonical extension: human role resolution flow
+
+After Login Account authentication and Company Membership validation:
+
+1. establish the selected authorized company context
+2. load all effective company-scoped role assignments for that membership
+3. resolve role permissions
+4. apply module permission semantics
+5. deny any operation without an explicit authorization path
+
+A user may hold multiple module roles in the same company.
+
+Example shape:
+
+Company Membership
+-> accounting role
+-> finance role
+-> purchasing approval role
+
+The role set is evaluated together; COMPANY_STAFF is not a substitute for
+module-specific role assignment.
+
+## Canonical extension: AI Worker execution flow
+
+AI Worker execution flow:
+
+1. authenticate Service Identity
+2. validate Service Identity status
+3. validate explicit Service Company Access
+4. resolve effective Service Role Assignment
+5. resolve shared permission definitions
+6. construct trusted execution_actor_context
+7. preserve requested_by Login Account when human-initiated
+8. execute ERP operation
+9. emit auditable actor/company/authorization evidence
+
+Failure of any authentication, company-access, role, permission, or actor
+validation denies the operation.
+
+AI Worker must never be converted into a fake human Login Account merely to
+satisfy an existing business-table actor field.

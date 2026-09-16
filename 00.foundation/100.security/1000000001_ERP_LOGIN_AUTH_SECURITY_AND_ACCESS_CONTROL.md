@@ -119,3 +119,37 @@ Security audit records must never contain:
 ## 11. Fail-closed rule
 
 Authentication/authorization infrastructure errors must not silently grant access.
+
+## Canonical extension: role and service security
+
+Role security requirements:
+
+- multiple company roles must not bypass permission evaluation
+- role name alone is not permission authority
+- module role permissions are explicit
+- approval roles are explicit
+- separation-of-duties rules may constrain otherwise valid role combinations
+- administrative role does not imply unrestricted business-data access
+
+Service actor security requirements:
+
+- AI Worker authenticates as Service Identity
+- AI Worker must not possess a human password
+- AI Worker must not reuse a human session
+- company access must be validated before authorization
+- Service Role Assignment must be effective and non-revoked
+- least privilege is mandatory
+- credential rotation must not require actor identity replacement
+- credential values must never be emitted to logs
+- Service Identity and human requester must remain distinguishable in evidence
+
+Required security event classes additionally include:
+
+- service_identity_authentication_succeeded
+- service_identity_authentication_failed
+- service_company_access_denied
+- service_role_assignment_changed
+- service_credential_rotated
+- service_credential_revoked
+- service_operation_authorized
+- service_operation_denied
