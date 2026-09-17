@@ -149,3 +149,226 @@ validation denies the operation.
 
 AI Worker must never be converted into a fake human Login Account merely to
 satisfy an existing business-table actor field.
+
+# USER, ROLE, PREFERENCE AND SECURITY FLOWS
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+## COMPANY BOOTSTRAP ADMIN FLOW
+
+Company creation or separately governed bootstrap
+→ bootstrap provisioning request
+→ provider identity established
+→ Login Account created or bound
+→ Company Membership ACTIVE
+→ COMPANY_SYSTEM_ADMIN assigned
+→ bootstrap completion audited.
+
+Bootstrap must not become an unrestricted permanent bypass.
+
+## APPLICATION FLOW
+
+Applicant identifies the intended company through an approved application
+entry path.
+
+Public enumeration of arbitrary companies for unrestricted signup is not
+required and must not be assumed.
+
+Flow:
+
+provider identity may be established
+→ application submitted
+→ company administrator reviews
+→ approve or reject
+→ on approval, Login Account binding is established as required
+→ Company Membership becomes effective
+→ initial permitted roles are assigned
+→ ERP access becomes available.
+
+Applicant must not self-approve.
+
+Provider UID alone grants no access.
+
+## INVITATION FLOW
+
+Company administrator
+→ creates invitation for own company
+→ user_provisioning_request=PENDING
+→ provider invitation initiated
+→ invited user completes provider authentication setup
+→ provider UID verified
+→ Login Account binding established
+→ Company Membership activated
+→ approved roles assigned
+→ invitation marked COMPLETED.
+
+Invitation may expire, be cancelled, or be resent through a governed flow.
+
+Raw provider invitation secret/token must not be stored in ERP.
+
+## LOGIN FLOW
+
+login identifier
+→ Supabase Auth
+→ provider authentication success
+→ provider UID resolution
+→ active login_identity_binding resolution
+→ Login Account status validation
+→ provider/MFA policy validation
+→ active Company Membership discovery
+→ company context resolution
+→ Role/Permission resolution
+→ preference resolution
+→ ERP authenticated session
+→ ERP entry.
+
+Zero active companies:
+
+business access denied.
+
+One active company:
+
+automatic selection may occur if policy permits.
+
+Multiple active companies:
+
+explicit company selection is required unless a valid
+last_selected_company preference can be revalidated and policy permits
+automatic reuse.
+
+## LAST SELECTED COMPANY FLOW
+
+last_selected_company_id
+→ treat as preference only
+→ verify active Company Membership
+→ verify current company authentication policy
+→ if valid, may select
+→ otherwise require company selection.
+
+Stale preference never creates access.
+
+## LANGUAGE RESOLUTION FLOW
+
+Current explicit UI selection
+→ stored user preferred language when available
+→ company default language when defined
+→ ERP system default.
+
+Language change does not require re-login.
+
+The resolved UI language may be refreshed in the active session.
+
+UI language does not change document language or currency.
+
+## TIME-ZONE RESOLUTION FLOW
+
+User preferred display time zone
+→ company/default display fallback
+→ ERP system display default.
+
+Business dates, accounting periods, cutoffs, and company batch boundaries
+must use the applicable company business time zone rather than merely the
+user display time zone.
+
+## USER PROFILE CHANGE FLOW
+
+User or authorized administrator
+→ validate field ownership
+→ update permitted ERP account/profile/preference fields
+→ audit change.
+
+Provider credential or provider-verified login identifier changes follow
+the provider's verified security flow.
+
+A company administrator must not directly rewrite provider credentials.
+
+## COMPANY MEMBERSHIP CHANGE FLOW
+
+Authorized company administrator
+→ select own-company membership
+→ activate, suspend, or end membership
+→ recompute company access
+→ invalidate stale selected-company context where required
+→ audit.
+
+Membership change must not mutate unrelated company memberships.
+
+## COMPANY USER REMOVAL FLOW
+
+Authorized company administrator
+→ end effective own-company role assignments
+→ end/suspend own-company membership
+→ invalidate selected own-company context
+→ retain Login Account
+→ retain other company memberships
+→ audit.
+
+## GLOBAL ACCOUNT DISABLE FLOW
+
+Authorized global/security authority
+→ Login Account DISABLED
+→ ERP sessions revoked/invalidated
+→ new ERP session establishment denied
+→ historical records preserved.
+
+Company-local user removal alone does not execute this flow.
+
+## ROLE DEFINITION FLOW
+
+For allowed company custom roles:
+
+authorized company administrator
+→ create/update/disable company-scoped custom Role Definition
+→ validate role ownership and grant boundary
+→ audit.
+
+Built-in system/module role definitions are protected.
+
+## ROLE ASSIGNMENT FLOW
+
+authorized administrator
+→ select valid target membership or system account
+→ select assignable role
+→ validate scope/category/company/grant boundary
+→ grant/change/end assignment
+→ refresh/invalidate authorization state
+→ audit.
+
+## LAST COMPANY SYSTEM ADMIN FLOW
+
+Before ending the final active COMPANY_SYSTEM_ADMIN:
+
+check replacement
+→ replacement exists: transition may continue
+→ no replacement: reject and fail closed.
+
+## MFA STEP-UP FLOW
+
+Company context requested
+→ company_auth_policy evaluated
+→ current provider assurance evaluated
+→ if sufficient: continue
+→ if insufficient: provider MFA/step-up required
+→ on success: company context may activate
+→ on failure: deny.
+
+ERP does not handle raw MFA factor secrets.
+
+## ACCOUNT RECOVERY FLOW
+
+Password reset, email verification, provider credential recovery,
+and MFA recovery occur through provider-governed mechanisms.
+
+Recovery success does not bypass ERP account, membership, or role checks.
+
+## AI WORKER PROVISIONING FLOW
+
+authorized service administrator
+→ Service Identity created
+→ Service Credential reference established
+→ explicit Service Company Access granted
+→ service Role Assignment granted
+→ authentication tested
+→ AI Worker becomes usable.
+
+No human Login Account or human Company Membership is fabricated.

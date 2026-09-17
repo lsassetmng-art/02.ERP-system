@@ -167,3 +167,108 @@ attribution without exposing raw credentials.
 
 Module APIs consume permissions from the common authorization framework while
 the source module remains authority for its own permission semantics.
+
+# PHYSICAL AUTH PROVIDER AND CONTEXT INTEGRATION CONTRACT
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+## SUPABASE AUTH CONTRACT
+
+Supabase Auth is the selected authentication provider.
+
+Provider-managed auth schema is auth.
+
+ERP consumes trusted provider identity/session evidence.
+
+ERP does not treat auth.users as the ERP Login Account table.
+
+Provider administrative credentials must remain server-side and must not
+be exposed to an ERP browser client.
+
+## UID BINDING CONTRACT
+
+Trusted provider UID
+→ security.login_identity_binding
+→ security.login_account.
+
+The provider UID is not assigned by a company administrator.
+
+(authentication_provider_code, authentication_subject_reference) is
+globally unique within active provider bindings.
+
+## COMPANY CONTEXT CONTRACT
+
+integration.my_company_id() remains an integration-facing compatibility
+interface.
+
+It must ultimately resolve company identity from trusted ERP
+authenticated/authorized company context.
+
+It must not:
+
+- choose an arbitrary membership;
+- use LIMIT 1 as company selection policy;
+- trust an unvalidated client company_id;
+- derive company solely from provider UID;
+- collapse Service Identity into human Login Account.
+
+The internal security authority for selected company context is
+security.authenticated_session for human sessions or the corresponding
+trusted service execution context for Service Identity.
+
+## COMPANY MEMBERSHIP CONTRACT
+
+Company authorization uses security.company_membership.
+
+core.company remains the Company authority.
+
+Legacy core.company_users does not become canonical membership authority.
+
+## USER PROVISIONING INTEGRATION
+
+Application and invitation workflows integrate with the provider only
+through controlled server-side operations.
+
+Raw invite/recovery/password/MFA secrets are not ERP integration payloads
+or audit values.
+
+Provider account creation or existence does not automatically create
+company access.
+
+## LANGUAGE CONTRACT
+
+UI language uses a governed supported BCP 47 language/locale registry.
+
+Initial required language support may include:
+
+- ja-jp;
+- en-us.
+
+The registry is extensible.
+
+Browser/device language may be used only as an initial suggestion when no
+governed preference exists.
+
+Browser/device language is not canonical preference authority.
+
+## TIME-ZONE CONTRACT
+
+User preferred time zone uses an IANA time-zone identifier.
+
+User display time zone and company business time zone remain separate
+concerns.
+
+## CURRENCY CONTRACT
+
+Locale/language must not infer canonical accounting currency,
+company base currency, or document currency.
+
+## PUBLIC SCHEMA CONTRACT
+
+No Login/Auth source-of-truth table, routine, credential object,
+session object, membership object, role object, or service identity object
+may be created in public.
+
+The existing global public-schema policy remains:
+
+ordinary read-only views only.

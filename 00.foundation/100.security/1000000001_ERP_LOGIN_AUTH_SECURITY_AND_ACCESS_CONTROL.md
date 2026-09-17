@@ -153,3 +153,172 @@ Required security event classes additionally include:
 - service_credential_revoked
 - service_operation_authorized
 - service_operation_denied
+
+# PHYSICAL AUTHENTICATION AND LIFECYCLE SECURITY EXTENSION
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+## PROVIDER SECURITY
+
+Authentication provider:
+
+SUPABASE_AUTH.
+
+Provider schema:
+
+auth.
+
+ERP must not store:
+
+- plaintext passwords;
+- password hashes owned by the provider;
+- raw password reset secrets;
+- raw email verification secrets;
+- raw MFA factor secrets;
+- provider administrative secret keys;
+- raw invitation secrets.
+
+## ERP SECURITY SCHEMA
+
+ERP authentication/authorization security authority resides in:
+
+security.
+
+Security schema objects must not be exposed as public writable authority.
+
+## FAIL-CLOSED ACCESS CHECK
+
+A human request is allowed only after:
+
+- provider authentication is trusted;
+- provider identity binding is active;
+- Login Account is ACTIVE;
+- selected company context is valid where required;
+- Company Membership is ACTIVE where required;
+- effective roles are valid;
+- effective permissions allow the operation.
+
+Failure at any required stage denies access.
+
+## SESSION SECURITY
+
+ERP authenticated sessions must support revocation and expiry.
+
+Account disablement must invalidate ERP sessions.
+
+Membership suspension/end must invalidate affected selected-company
+context.
+
+Role changes must not leave stale permission grants effective
+indefinitely.
+
+Authorization versioning, re-resolution, or equivalent invalidation must
+be used.
+
+## MFA
+
+MFA factor enrollment and secret material remain provider-managed.
+
+ERP may evaluate provider-authenticated assurance and enforce company
+policy.
+
+A company requiring MFA must deny company-context activation until the
+required assurance level is satisfied.
+
+## RECOVERY
+
+Password recovery, email verification, identity recovery, and MFA recovery
+must not bypass ERP authorization checks.
+
+Recovered provider identity must still map to a valid ERP Login Account.
+
+## INVITATION SECURITY
+
+Invitation references must be time-bounded where supported.
+
+Raw invitation tokens must not be stored in ERP source-of-truth tables or
+logs.
+
+Expired/cancelled invitation must fail closed.
+
+## COMPANY ADMIN BOUNDARY
+
+Company administrators may suspend/end own-company membership when
+authorized.
+
+Company administrators must not disable the global account merely through
+own-company removal.
+
+## ROLE SECURITY
+
+Role assignment requires:
+
+- valid actor authority;
+- valid target;
+- correct scope;
+- correct company boundary;
+- correct role category;
+- allowed grant boundary.
+
+Service roles must not be assigned to human memberships.
+
+Human company roles must not be assigned through Service Role Assignment.
+
+## LAST ADMIN SAFETY
+
+Removal of the last active COMPANY_SYSTEM_ADMIN must fail closed without
+replacement/recovery authority.
+
+## SERVICE IDENTITY SECURITY
+
+AI Worker is Service Identity.
+
+AI Worker must use least privilege.
+
+Provider-wide unrestricted administrative/service keys must not be used
+as the identity of an individual AI Worker.
+
+security.service_credential stores credential metadata/reference only.
+
+Plaintext service secret storage is prohibited.
+
+## AUDIT EVENT REQUIREMENTS
+
+Security/audit event categories must include at minimum:
+
+- user access application submitted;
+- user access application approved;
+- user access application rejected;
+- invitation created;
+- invitation resent;
+- invitation cancelled;
+- invitation expired;
+- provider identity bound;
+- provider identity binding revoked;
+- Login Account activated;
+- Login Account suspended;
+- Login Account disabled;
+- Company Membership created;
+- Company Membership activated;
+- Company Membership suspended;
+- Company Membership ended;
+- company context selected;
+- company context denied;
+- Role Definition created;
+- Role Definition changed;
+- Role Definition disabled/deprecated;
+- Role Assignment granted;
+- Role Assignment changed;
+- Role Assignment ended;
+- user preference changed;
+- authentication success/failure;
+- MFA/step-up required/satisfied/failed as appropriate;
+- logout/session revocation;
+- Service Identity lifecycle changes;
+- Service Credential rotation/revocation;
+- service company access changes;
+- service role changes;
+- operation allowed/denied where required by security policy.
+
+Sensitive credentials, raw authentication tokens, and secret material must
+not appear in audit payloads.

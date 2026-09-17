@@ -242,3 +242,126 @@ actor attribution.
 
 Human identity and service identity must remain distinguishable throughout
 authentication, authorization, business execution, and audit evidence.
+
+# ERP LOGIN / AUTH PHYSICAL AUTHORITY, USER AND ROLE LIFECYCLE EXTENSION
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+This extension resolves the physical authentication authority and defines
+the governed lifecycle for human users, company membership, roles,
+preferences, authentication security, and AI Worker service identities.
+
+Any earlier statement in this canonical set that leaves the physical
+authentication provider, ERP authentication schema, or Service Identity
+schema UNDECIDED is superseded by this extension.
+
+## AUTHORITY PRINCIPLE
+
+The authentication provider and ERP authorization authority are separate.
+
+Supabase Auth owns provider-managed authentication identity and credential
+mechanisms.
+
+ERP Foundation Security owns ERP Login Account, company membership,
+authorization, company context, role assignment, service identity,
+and ERP authentication policy.
+
+Provider authentication success alone must never grant ERP business access.
+
+Required human access chain:
+
+provider authentication
+→ provider UID binding
+→ active ERP Login Account
+→ active Company Membership
+→ effective Role Assignment
+→ effective Permission
+→ trusted selected company context.
+
+## USER PROVISIONING PRINCIPLE
+
+Normal human user provisioning is allowed only through:
+
+- company access application; or
+- company invitation.
+
+Public unrestricted ERP self-signup is prohibited.
+
+The authentication provider issues the provider UID.
+
+A company administrator does not issue or fabricate the provider UID.
+
+Company-side approval governs ERP membership and authorization.
+
+UID possession alone grants no ERP access.
+
+## MULTI-COMPANY PRINCIPLE
+
+One Login Account may belong to multiple companies.
+
+Company-to-user linkage is represented by Company Membership and must not
+be collapsed into a single company_id on Login Account.
+
+Removal from one company must end that company's membership and role
+assignments only.
+
+A company administrator must not disable the global Login Account merely
+because the user is removed from that administrator's company.
+
+## USER LIFECYCLE PRINCIPLE
+
+Human Login Account lifecycle must support:
+
+- invitation or approved application;
+- provider UID binding;
+- activation;
+- profile/preference update;
+- suspension;
+- disablement.
+
+Hard delete is prohibited by default.
+
+Exceptional purge or anonymization requires a separately governed
+retention/privacy process.
+
+## ROLE PRINCIPLE
+
+Role Definition and Role Assignment are separate governed concepts.
+
+Built-in system and module roles are protected definitions.
+
+Company-scoped custom roles may be supported within the owning company,
+subject to grant boundaries and deny-by-default authorization.
+
+Role assignment history must be retained.
+
+Role hard delete is prohibited by default.
+
+## USER PREFERENCE PRINCIPLE
+
+User interface language and user display time zone are explicit preferences.
+
+UI language must not define document language, accounting currency,
+document currency, company legal language, or company business time zone.
+
+Last selected company is a convenience preference only and must be
+revalidated against current active membership at every use.
+
+## AUTHENTICATION SECURITY PRINCIPLE
+
+Password, provider credential, email verification, MFA factor material,
+and provider recovery secrets remain provider-managed.
+
+ERP must not store plaintext provider passwords, MFA secrets,
+recovery secrets, or provider administrative secret keys.
+
+## AI WORKER PRINCIPLE
+
+AI Worker provisioning remains a Service Identity lifecycle.
+
+AI Worker must not be provisioned as a human Login Account merely to obtain
+access.
+
+Human and Service authorization may share Permission Definitions but their
+identity, credential, company-access, and assignment mechanisms remain
+separate.

@@ -164,3 +164,192 @@ business API execution.
 The physical provider, physical schema, secret storage product, and credential
 transport remain implementation decisions requiring separate canonical
 physical design acceptance.
+
+# USER / ROLE / PREFERENCE / PHYSICAL AUTH IMPLEMENTATION DESIGN
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+primary_ui: HTML/CommonOS
+
+Multilingual UI is mandatory.
+
+## REQUIRED USER SURFACES
+
+Human-facing surfaces include:
+
+- Login;
+- Company Selection;
+- My Account / Profile;
+- Language and Time Zone Preferences;
+- Company Access Application;
+- Invitation Acceptance status;
+- Session / Logout surface as appropriate.
+
+Company administration surfaces include:
+
+- Access Applications;
+- Invitations;
+- Company Users / Memberships;
+- User Membership Detail;
+- Role Assignment;
+- Company Custom Roles where enabled;
+- Company Authentication Policy where enabled.
+
+Security/service administration surfaces include:
+
+- Service Identities;
+- Service Company Access;
+- Service Role Assignment;
+- Service Credential lifecycle metadata.
+
+## LOGIN SCREEN
+
+Login screen must not require user to supply arbitrary company_id as an
+authorization fact.
+
+Provider authentication occurs before ERP authorization resolution.
+
+## COMPANY SELECTION
+
+Company selection displays only currently authorized active memberships.
+
+Last selected company may be preselected only after revalidation.
+
+## USER PROVISIONING API CAPABILITIES
+
+The implementation must provide governed API capabilities for:
+
+- submit company access application;
+- list/review application by authorized company administrator;
+- approve/reject application;
+- create/resend/cancel invitation;
+- bind verified provider identity;
+- activate/suspend/disable Login Account according to authority;
+- activate/suspend/end Company Membership.
+
+Exact route naming may evolve only without changing these canonical
+responsibility boundaries.
+
+## USER PREFERENCE API CAPABILITIES
+
+The implementation must support:
+
+- read current UI preference;
+- update preferred language;
+- update preferred display time zone;
+- update last selected company preference only after authorization
+  validation.
+
+Preference updates must not change Role or Membership.
+
+## ROLE API CAPABILITIES
+
+The implementation must support governed operations for:
+
+- list effective roles;
+- create permitted company custom role;
+- update permitted company custom role;
+- disable/deprecate permitted company custom role;
+- grant role assignment;
+- change assignment effective period where supported;
+- end/revoke role assignment.
+
+Built-in role mutation must be rejected.
+
+## SESSION API
+
+Existing canonical session API remains required.
+
+GET /api/v1/auth/session must expose sufficient non-secret state for the
+client to understand:
+
+- authenticated Login Account;
+- current company context;
+- available company selection state where authorized;
+- effective UI language;
+- effective display time zone;
+- required reauthentication/step-up state where applicable.
+
+Sensitive provider tokens must not be returned unnecessarily.
+
+## COMPANY CONTEXT API
+
+POST /api/v1/auth/company-context remains the controlled company-selection
+operation.
+
+It must:
+
+- validate active membership;
+- validate account status;
+- validate company security policy;
+- update trusted ERP session context;
+- update last-selected-company preference only after successful context
+  selection;
+- fail closed on stale membership.
+
+## LOGOUT
+
+Logout must terminate or invalidate the ERP session and invoke the
+appropriate provider logout/session behavior according to implementation
+policy.
+
+## PASSWORD / MFA / RECOVERY UI
+
+Password, verification, MFA enrollment, and provider recovery flows must
+use supported provider mechanisms.
+
+ERP screens may launch or coordinate those flows but must not become the
+credential secret authority.
+
+## USER REMOVAL UI
+
+Company administration "remove user" must clearly mean removal from the
+current company.
+
+It must not imply global Login Account deletion.
+
+Global disablement must be a separately authorized operation.
+
+## ROLE SAFETY UI
+
+The UI must distinguish:
+
+- built-in role;
+- company custom role;
+- system scope;
+- company scope;
+- service role.
+
+The UI must prevent or reject attempts to remove the last active
+COMPANY_SYSTEM_ADMIN without a valid replacement/recovery path.
+
+## LANGUAGE
+
+Initial required UI language coverage:
+
+- ja-jp;
+- en-us.
+
+Language architecture remains extensible.
+
+Language change must not require re-login.
+
+## TIME ZONE
+
+Time-zone values must use IANA identifiers.
+
+Display time-zone selection must not redefine company accounting/business
+time zone.
+
+## AI WORKER
+
+AI Worker administration must not present a human password-login flow.
+
+It requires:
+
+- Service Identity lifecycle;
+- Service Credential lifecycle;
+- Service Company Access;
+- Service Role Assignment;
+- suspension/revocation;
+- audit.

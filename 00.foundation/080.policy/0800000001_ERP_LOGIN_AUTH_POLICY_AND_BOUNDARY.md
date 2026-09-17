@@ -141,3 +141,134 @@ Policy:
 - raw service credentials must not appear in logs or business payloads
 - human-initiated service execution retains requested_by attribution
 - autonomous execution still retains Service Identity attribution
+
+# USER, COMPANY, ROLE AND PREFERENCE GOVERNANCE POLICY
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+## PROVISIONING POLICY
+
+Allowed normal human provisioning methods:
+
+- APPLICATION;
+- INVITATION.
+
+BOOTSTRAP is allowed only for governed initial company administration.
+
+Unrestricted public ERP self-signup is prohibited.
+
+Company approval is required before company business access is granted.
+
+## COMPANY ADMINISTRATOR AUTHORITY
+
+A company administrator may act only within explicitly authorized company
+scope.
+
+Depending on assigned permissions, company administration may include:
+
+- review own-company access applications;
+- issue own-company invitations;
+- activate/suspend/end own-company membership;
+- grant/end allowed own-company roles;
+- manage allowed own-company custom roles;
+- review company authentication policy.
+
+A company administrator must not merely by company-admin status:
+
+- create or grant global system roles;
+- modify provider passwords;
+- inspect provider secrets;
+- rewrite provider UID;
+- disable a user's global Login Account because of own-company removal;
+- mutate another company's membership;
+- mutate another company's custom role;
+- bypass grant-boundary checks.
+
+## SELF-ELEVATION POLICY
+
+Role-management authority does not imply unlimited role-grant authority.
+
+An administrator may grant only roles/permissions allowed by the
+administrator's effective grant boundary.
+
+Unauthorized self-elevation is prohibited.
+
+## BUILT-IN ROLE POLICY
+
+SYSTEM_BUILTIN and MODULE_BUILTIN role definitions are protected.
+
+Company administrators may assign a permitted built-in company role but
+must not rewrite its canonical semantics.
+
+COMPANY_CUSTOM role definitions are scoped to the owning company.
+
+## COMMON COMPANY ROLES
+
+Reserved common company roles remain:
+
+- COMPANY_SYSTEM_ADMIN;
+- COMPANY_ADMIN;
+- COMPANY_STAFF.
+
+COMPANY_SYSTEM_ADMIN is company scope.
+
+It is not a global system role.
+
+COMPANY_STAFF is a minimal/common company-user role and must not imply
+universal module access.
+
+## MODULE ROLE POLICY
+
+Module-specific business and approval role semantics remain owned by the
+source module.
+
+Foundation owns the shared Role/Permission/Assignment framework.
+
+## LAST ADMIN POLICY
+
+The final active COMPANY_SYSTEM_ADMIN for a company must not be removed,
+ended, or deprived of that role without a governed replacement or recovery
+path.
+
+## USER DELETE POLICY
+
+Normal company-level "delete user" means end company access, not physical
+delete of Login Account.
+
+Default user hard delete is prohibited.
+
+Historical actor identity, approvals, business actions, and audit evidence
+must remain attributable.
+
+## MULTI-COMPANY POLICY
+
+One Login Account may have multiple active Company Memberships.
+
+A membership or role change in Company A must not silently alter Company B.
+
+## EMPLOYEE POLICY
+
+Employee and Login Account remain separate.
+
+Employee linkage is optional.
+
+External professionals, contractors, auditors, or other authorized users
+may have Login Accounts without Employee records.
+
+## LANGUAGE AND TIME-ZONE POLICY
+
+User language and display time zone are user preferences.
+
+Company legal language, company business time zone, document language,
+and currency are separate governed concepts.
+
+Preference changes do not grant authorization.
+
+## MFA POLICY
+
+MFA capability is provider-backed.
+
+ERP may require MFA or stronger assurance according to governed
+platform/company authentication policy.
+
+ERP stores policy and assurance decisions, not raw MFA factor secrets.

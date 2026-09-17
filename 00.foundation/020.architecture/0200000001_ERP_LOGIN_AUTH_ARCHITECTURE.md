@@ -224,3 +224,179 @@ A human-requested AI Worker operation preserves both:
 
 An autonomous service operation may have no human requested_by value,
 but the Service Identity remains mandatory.
+
+# PHYSICAL AUTHORITY AND LIFECYCLE ARCHITECTURE
+
+canonical_extension: ERP_LOGIN_AUTH_PHYSICAL_AUTHORITY_USER_ROLE_LIFECYCLE_V1
+
+Earlier physical-provider/schema UNDECIDED statements are superseded by
+this physical architecture decision.
+
+## PROVIDER-MANAGED AUTHORITY
+
+Authentication provider:
+
+- SUPABASE_AUTH.
+
+Provider-managed schema:
+
+- auth.
+
+Provider-managed objects include:
+
+- auth.users;
+- auth.identities;
+- auth.sessions;
+- auth.refresh_tokens;
+- provider password/recovery/MFA mechanisms.
+
+Provider objects do not become ERP authorization authority.
+
+## ERP SECURITY AUTHORITY
+
+ERP-owned physical schema:
+
+- security.
+
+ERP Security physical authorities:
+
+- security.login_account;
+- security.login_identity_binding;
+- security.user_provisioning_request;
+- security.authenticated_session;
+- security.company_membership;
+- security.login_account_preference;
+- security.company_auth_policy;
+- security.role_definition;
+- security.permission_definition;
+- security.role_permission;
+- security.login_account_role_assignment;
+- security.membership_role_assignment;
+- security.service_identity;
+- security.service_credential;
+- security.service_company_access;
+- security.service_role_assignment.
+
+Company identity remains:
+
+- core.company.
+
+Company is not relocated by this change unit.
+
+## HUMAN IDENTITY ARCHITECTURE
+
+auth.users
+→ security.login_identity_binding
+→ security.login_account.
+
+Provider UID and ERP Login Account ID are distinct identifiers.
+
+The physical binding layer permits ERP identity to remain stable if
+provider integration evolves.
+
+## COMPANY LINKAGE ARCHITECTURE
+
+security.login_account
+→ security.company_membership
+→ core.company.
+
+A Login Account may have zero, one, or multiple Company Memberships.
+
+Company Membership existence does not itself grant module permission.
+
+## ROLE ARCHITECTURE
+
+System-scoped human role:
+
+security.login_account
+→ security.login_account_role_assignment
+→ security.role_definition.
+
+Company-scoped human role:
+
+security.login_account
+→ security.company_membership
+→ security.membership_role_assignment
+→ security.role_definition.
+
+Service role:
+
+security.service_identity
+→ security.service_role_assignment
+→ security.role_definition.
+
+The existing role_category model remains:
+
+- administrative;
+- business;
+- approval;
+- audit;
+- system;
+- service.
+
+Role scope and role category remain independent.
+
+Role origin is distinguished as:
+
+- SYSTEM_BUILTIN;
+- MODULE_BUILTIN;
+- COMPANY_CUSTOM.
+
+Built-in role definitions are not editable by ordinary company
+administrators.
+
+## SESSION AND COMPANY CONTEXT
+
+Provider session evidence is mapped to:
+
+- security.authenticated_session.
+
+ERP session context contains an explicitly selected company context.
+
+A selected company is valid only when the Login Account has a current
+active Company Membership for that company.
+
+Arbitrary LIMIT 1 membership selection is prohibited.
+
+## USER PREFERENCE ARCHITECTURE
+
+User preferences are separated from company membership and authorization.
+
+security.login_account_preference owns:
+
+- preferred UI language;
+- preferred display time zone;
+- last selected company preference.
+
+Company defaults remain company configuration concerns.
+
+Preference values never create authorization.
+
+## COMPANY AUTH POLICY
+
+security.company_auth_policy defines company-specific authentication
+requirements such as:
+
+- whether MFA is required for company access;
+- session policy overrides where permitted;
+- invitation expiry policy where permitted.
+
+Provider secrets and factor material are not stored in this table.
+
+## SERVICE IDENTITY ARCHITECTURE
+
+AI Worker uses:
+
+security.service_identity
+→ security.service_company_access
+→ security.service_role_assignment
+→ security.role_definition
+→ security.role_permission
+→ security.permission_definition.
+
+AI Worker does not use human Company Membership.
+
+AI Worker does not use a human session.
+
+Supabase service_role or an equivalent unrestricted provider administrative
+key must not be treated as an individual AI Worker identity.
