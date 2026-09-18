@@ -272,3 +272,74 @@ ERP may require MFA or stronger assurance according to governed
 platform/company authentication policy.
 
 ERP stores policy and assurance decisions, not raw MFA factor secrets.
+
+# ERP LOGIN / AUTH EXACT PHYSICAL POLICY V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+## CUTOVER
+
+CUTOVER_STRATEGY:
+
+ADDITIVE_COMPATIBILITY_FIRST.
+
+BIG_BANG_REPLACEMENT is prohibited.
+
+Initial Login/Auth implementation must not drop legacy user, membership,
+role, permission, or screen-permission objects.
+
+## IDENTIFIER POLICY
+
+Provider subject IDs, ERP Login Account IDs, and Service Identity IDs are
+separate identifier namespaces.
+
+Implicit equality is prohibited.
+
+## PROVIDER FK POLICY
+
+ERP security tables may FK to ERP-owned security tables and core.company.
+
+Hard FK from security to provider-managed auth tables is prohibited.
+
+## LEGACY ROLE POLICY
+
+Role-code equality alone is not migration authority.
+
+In particular:
+
+- governance.ADMIN is not automatically COMPANY_SYSTEM_ADMIN;
+- system.admin is not automatically COMPANY_SYSTEM_ADMIN;
+- screen view/edit/approve/final flags are not automatically business
+  Permissions.
+
+Module Role and Permission semantics remain module-owned.
+
+## ACTOR POLICY
+
+Automatic conversion:
+
+core.app_user FK
+→ security.login_account FK
+
+is prohibited.
+
+Every field requires actor classification.
+
+## DIRECT auth.uid() POLICY
+
+Direct business comparison of a provider UID to an ERP Login Account or
+generic execution actor field must be removed or explicitly justified
+before Login/Auth implementation acceptance.
+
+## PRODUCTION CUTOVER GATE
+
+Production acceptance requires:
+
+- trusted ERP Login Account resolution;
+- trusted ERP Session resolution;
+- trusted Company context;
+- no arbitrary Membership selection;
+- authorization-version invalidation;
+- correct direct-auth.uid actor semantics;
+- denied direct client DML against security authority;
+- no plaintext security secret persistence.

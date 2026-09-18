@@ -372,3 +372,123 @@ authorized service administrator
 → AI Worker becomes usable.
 
 No human Login Account or human Company Membership is fabricated.
+
+# ERP LOGIN / AUTH EXACT DATABASE FLOW V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+## LOGIN
+
+After trusted provider authentication:
+
+1. obtain provider subject;
+2. obtain trusted provider session_id;
+3. resolve ACTIVE login_identity_binding;
+4. resolve ACTIVE Login Account;
+5. create or refresh ERP authenticated_session;
+6. copy login_account.authorization_version;
+7. resolve effective Company Memberships;
+8. select or request Company context;
+9. verify company required AAL;
+10. expose trusted ERP authorization context.
+
+Provider authentication does not create Company Membership automatically.
+
+## COMPANY CONTEXT
+
+Company selection transaction:
+
+1. resolve current ERP authenticated_session;
+2. lock/revalidate target Membership;
+3. require ACTIVE effective Membership;
+4. verify current AAL against company_auth_policy;
+5. update authenticated_session.selected_company_id;
+6. update last_selected_company_id preference;
+7. expose trusted context.
+
+Preference is updated only after successful authorization.
+
+## APPLICATION / INVITATION
+
+Provisioning completion performs atomically where ERP-owned:
+
+- lock provisioning request;
+- validate request status;
+- validate approving actor;
+- create or resolve Login Account;
+- create verified Provider Binding;
+- create/activate Membership;
+- create explicitly approved initial Role Assignments;
+- mark provisioning complete;
+- increment authorization_version where required;
+- emit security/audit event.
+
+Provider invitation secrets are never persisted.
+
+## MEMBERSHIP CHANGE
+
+Suspension/end of a Membership:
+
+- locks Membership;
+- validates grant boundary;
+- validates final COMPANY_SYSTEM_ADMIN invariant;
+- updates status/effective period;
+- ends invalidated Role Assignments;
+- increments Login Account authorization_version;
+- invalidates unusable selected Company contexts;
+- emits security/audit event.
+
+Memberships in other Companies are unaffected.
+
+## ROLE CHANGE
+
+Human role grant requires:
+
+- valid grant actor;
+- valid target Login Account or Membership;
+- correct role scope;
+- non-service role category;
+- correct COMPANY_CUSTOM owner Company;
+- no duplicate/open overlap.
+
+Affected human authorization_version increments.
+
+## ROLE-PERMISSION CHANGE
+
+A Role-Permission change invalidates authorization_version for affected
+effective human and service assignees.
+
+## LAST COMPANY SYSTEM ADMIN
+
+Removal, suspension, end, disable, deprecation, or retirement that would
+remove the final effective COMPANY_SYSTEM_ADMIN is rejected unless an
+effective replacement/recovery transition occurs in the same governed
+transaction.
+
+## SERVICE
+
+Service setup uses:
+
+- Service Identity;
+- non-secret Service Credential reference;
+- Service Company Access where required;
+- service-category Role Assignment.
+
+No human Login Account, human session, or human Company Membership is
+fabricated.
+
+## LEGACY ACTOR CUTOVER
+
+The fourteen accepted core.app_user actor FK source columns currently have
+zero rows.
+
+This reduces data migration risk but does not authorize automatic FK
+repointing.
+
+Production writes must not mix:
+
+- provider UID;
+- ERP Login Account UUID;
+- Service Identity UUID
+
+inside one legacy actor field.

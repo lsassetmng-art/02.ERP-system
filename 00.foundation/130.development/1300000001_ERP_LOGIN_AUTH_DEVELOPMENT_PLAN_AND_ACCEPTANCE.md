@@ -282,3 +282,86 @@ After canonical acceptance:
 
 P1 Procurement Quantity remains HOLD until Login/Auth implementation
 acceptance under canonical.
+
+# ERP LOGIN / AUTH EXACT DDL ACCEPTANCE V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+Exact-DDL canonical acceptance requires:
+
+- security authority table count = 16;
+- all sixteen authority names defined;
+- Provider/ERP ID separation;
+- no security-to-auth hard FK;
+- Login Account authorization_version;
+- Service Identity authorization_version;
+- trusted provider session reference;
+- trusted Company context;
+- multi-company Membership;
+- Role scope/category separation;
+- Role lifecycle including RETIRE;
+- COMPANY_CUSTOM Company ownership;
+- final COMPANY_SYSTEM_ADMIN protection;
+- temporal non-overlap protection;
+- deny-by-default RLS;
+- no ordinary direct client security DML;
+- no plaintext secrets.
+
+## ACCEPTED EVIDENCE BASELINE
+
+Current implementation evidence baseline:
+
+- security schema present: NO
+- auth.users rows: 1
+- core.app_user rows: 0
+- core.company_users rows: 0
+- core.company rows: 0
+- core.app_user inbound FKs: 14
+- system.role_def inbound FKs: 2
+- integration.my_company_id() policies: 179
+- direct auth.uid() policies: 12
+- policies using both: 2
+- legacy actor source rows: 0
+- legacy actor non-null references: 0
+- governance.role_permission rows: 5
+- system.role_screen_permission rows: 117
+
+## ROLE ACCEPTANCE
+
+Legacy role codes are not automatic canonical mappings.
+
+In particular, ADMIN is not automatically COMPANY_SYSTEM_ADMIN.
+
+Role Definition lifecycle is:
+
+CREATE_UPDATE_DISABLE_DEPRECATE_RETIRE.
+
+## DIRECT AUTH UID ACCEPTANCE
+
+All twelve direct auth.uid policies must be semantically reviewed and
+remediated or explicitly proven correct before Login/Auth implementation
+acceptance.
+
+## ACTOR ACCEPTANCE
+
+Zero current data does not waive actor classification.
+
+Automatic core.app_user → security.login_account FK repoint is prohibited.
+
+## IMPLEMENTATION GATES
+
+After this canonical change is accepted and pushed:
+
+1. prepare exact 04 implementation bundle
+2. review bundle READ ONLY
+3. accept migration and verification scripts
+4. obtain explicit DB GO
+5. deploy additive security authority
+6. cut over compatibility resolver
+7. remediate direct auth.uid policies
+8. perform approved actor migration
+9. verify RLS/session/role/service behavior
+10. accept Login/Auth implementation
+
+P1 Procurement Quantity remains HOLD until Login/Auth implementation
+acceptance.

@@ -272,3 +272,248 @@ may be created in public.
 The existing global public-schema policy remains:
 
 ordinary read-only views only.
+
+# ERP LOGIN / AUTH EXACT RESOLVER CONTRACT V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+Required protected logical helpers in schema security:
+
+- security.current_provider_session_reference() → text
+- security.current_aal() → text
+- security.current_login_account_id() → uuid
+- security.current_authenticated_session_id() → uuid
+- security.current_company_id() → uuid
+- security.has_permission(
+    module_code text,
+    resource_code text,
+    action_code text
+  ) → boolean
+
+## PROVIDER SESSION
+
+For SUPABASE_AUTH:
+
+security.current_provider_session_reference()
+
+reads the trusted session_id claim.
+
+Missing or invalid session_id resolves fail-closed.
+
+Raw JWT/access/refresh tokens are not stored in ERP session persistence.
+
+## CURRENT LOGIN ACCOUNT
+
+security.current_login_account_id():
+
+- obtains auth.uid();
+- treats auth.uid() only as provider subject;
+- resolves ACTIVE SUPABASE_AUTH login_identity_binding;
+- requires ACTIVE Login Account;
+- returns ERP login_account_id;
+- otherwise returns NULL.
+
+auth.uid() itself is never returned as ERP Login Account ID.
+
+## CURRENT ERP SESSION
+
+security.current_authenticated_session_id():
+
+- resolves current Login Account;
+- resolves trusted provider session reference;
+- requires ACTIVE ERP session;
+- requires expires_at > now();
+- requires matching Login Account;
+- requires matching authorization_version;
+- otherwise returns NULL.
+
+## CURRENT COMPANY
+
+security.current_company_id():
+
+- resolves current authenticated session;
+- requires selected_company_id;
+- requires ACTIVE effective Membership;
+- requires current AAL satisfy company_auth_policy;
+- otherwise returns NULL.
+
+No arbitrary company selection is allowed.
+
+## PERMISSION
+
+security.has_permission():
+
+- resolves the current human actor;
+- resolves Company context where necessary;
+- evaluates effective system Role Assignments;
+- evaluates effective Membership Role Assignments;
+- requires active Role Definition;
+- requires active Permission Definition;
+- requires effective Role-Permission;
+- denies by default.
+
+Membership existence alone grants no Permission.
+
+## integration.my_company_id()
+
+integration.my_company_id() remains the compatibility interface.
+
+Its internal authority becomes:
+
+security.current_company_id().
+
+It must not:
+
+- read core.company_users;
+- select arbitrary Membership with LIMIT 1;
+- treat auth.uid() as ERP Login Account ID;
+- trust caller-supplied company_id.
+
+Return type remains uuid.
+
+## DIRECT auth.uid() CUTOVER
+
+Accepted exact direct-policy targets:
+
+- audit.approval_log / p_al_insert_approver
+- audit.approval_request / p_ar_update_approver
+- audit.exec_audit_event / p_audit_exec_audit_event_owner
+- media.asset / p_media_asset_owner
+- media.asset_link / p_media_asset_link_owner
+- ops.document_file / p_ops_document_file_user
+- ops.document_send_history / p_ops_send_history_user
+- system.ai_task / p_ai_task_owner
+- system.db_session / p_db_session_owner
+- system.exec_command / p_exec_command_owner
+- system.exec_run_request / p_exec_run_request_owner
+- system.operation_log / p_operation_log_owner
+
+These policies are not rewritten by blind textual substitution.
+
+Each requires actor-semantic classification before Login/Auth
+implementation acceptance.
+
+Two of the twelve also depend on integration.my_company_id() and therefore
+require both company-context and actor-identity validation.
+
+## PUBLIC COMPATIBILITY VIEWS
+
+Existing ordinary public compatibility views:
+
+- public.app_user
+- public.company_users
+
+are not canonical authority.
+
+They may remain temporarily read-only.
+
+They must not be redesigned to falsely collapse one Login Account into one
+Company or multiple Role Assignments into one role_code.
+
+# ERP LOGIN / AUTH EXACT HELPER SECURITY CONTRACT V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_SEMANTIC_CLOSURE_V1
+
+The security mode of each canonical resolver is fixed.
+
+## CLAIM-ONLY HELPERS
+
+security.current_provider_session_reference()
+
+Execution mode:
+
+SECURITY INVOKER.
+
+security.current_aal()
+
+Execution mode:
+
+SECURITY INVOKER.
+
+These functions derive only trusted request-claim context and do not need
+privileged reads of ERP security authority tables.
+
+They must not accept provider subject, provider session, AAL, or Company
+as caller-controlled function arguments.
+
+## AUTHORITY-READING HELPERS
+
+security.current_login_account_id()
+
+Execution mode:
+
+SECURITY DEFINER.
+
+security.current_authenticated_session_id()
+
+Execution mode:
+
+SECURITY DEFINER.
+
+security.current_company_id()
+
+Execution mode:
+
+SECURITY DEFINER.
+
+security.has_permission(text,text,text)
+
+Execution mode:
+
+SECURITY DEFINER.
+
+These functions require controlled reads of ERP security authority tables
+because ordinary authenticated callers have no direct table SELECT grant.
+
+Every SECURITY DEFINER authority helper uses:
+
+SET search_path = ''
+
+and every object reference is explicitly schema-qualified.
+
+Function ownership must be a trusted non-login or otherwise governed
+database owner role appropriate to the deployment environment.
+
+Ownership must not be assigned to anon or authenticated.
+
+## integration.my_company_id()
+
+The compatibility function:
+
+integration.my_company_id()
+
+uses:
+
+SECURITY DEFINER
+SET search_path = ''
+
+Its canonical authority source is only:
+
+security.current_company_id().
+
+The function body must use the schema-qualified call:
+
+security.current_company_id()
+
+and must not query:
+
+- core.company_users;
+- core.app_user;
+- auth.users;
+- auth.sessions
+
+directly.
+
+It must not use LIMIT 1.
+
+It must not derive Company from caller-controlled input.
+
+Its return type remains uuid.
+
+## FAILURE MODE
+
+All current-identity/current-session/current-company resolvers fail closed.
+
+Missing, malformed, inactive, expired, stale, or unauthorized context
+returns no trusted authorization context rather than selecting a fallback
+Company or principal.

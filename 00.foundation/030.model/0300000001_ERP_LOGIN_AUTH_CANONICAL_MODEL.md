@@ -839,3 +839,1395 @@ Service context derives from authenticated Service Identity/company
 access.
 
 Human-initiated service execution preserves requested-by attribution.
+
+# ERP LOGIN / AUTH EXACT PHYSICAL MODEL V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+Unless explicitly stated otherwise:
+
+- primary IDs are uuid;
+- uuid default is gen_random_uuid();
+- timestamps are timestamptz;
+- created_at defaults to now();
+- mutable authority rows include updated_at;
+- status values are constrained;
+- effective_to must be null or greater than effective_from.
+
+## 1. security.login_account
+
+Columns:
+
+- login_account_id uuid NOT NULL DEFAULT gen_random_uuid()
+- login_identifier text NOT NULL
+- normalized_login_identifier text NOT NULL
+- display_name text NULL
+- status text NOT NULL
+- authorization_version bigint NOT NULL DEFAULT 1
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+- suspended_at timestamptz NULL
+- disabled_at timestamptz NULL
+
+Primary key:
+
+- login_account_id
+
+Unique:
+
+- normalized_login_identifier
+
+Status:
+
+- INVITED
+- ACTIVE
+- SUSPENDED
+- DISABLED
+
+Checks:
+
+- normalized_login_identifier must not be blank
+- authorization_version > 0
+
+Provider subject is not stored as account identity authority here.
+
+## 2. security.login_identity_binding
+
+Columns:
+
+- login_identity_binding_id uuid NOT NULL DEFAULT gen_random_uuid()
+- login_account_id uuid NOT NULL
+- authentication_provider_code text NOT NULL
+- authentication_subject_reference text NOT NULL
+- binding_status text NOT NULL
+- is_primary boolean NOT NULL DEFAULT true
+- bound_at timestamptz NOT NULL DEFAULT now()
+- revoked_at timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- login_identity_binding_id
+
+Foreign key:
+
+- login_account_id
+  → security.login_account(login_account_id)
+
+Status:
+
+- ACTIVE
+- REVOKED
+
+Unique:
+
+- authentication_provider_code + authentication_subject_reference
+
+Partial unique requirements:
+
+- one ACTIVE binding per
+  login_account_id + authentication_provider_code
+- one ACTIVE primary binding per login_account_id
+
+Provider-managed FK to auth.users is prohibited.
+
+For SUPABASE_AUTH the subject reference is auth.users.id serialized as
+canonical text.
+
+## 3. security.user_provisioning_request
+
+Columns:
+
+- user_provisioning_request_id uuid NOT NULL DEFAULT gen_random_uuid()
+- company_id uuid NOT NULL
+- provisioning_method text NOT NULL
+- requested_login_identifier text NOT NULL
+- normalized_requested_login_identifier text NOT NULL
+- applicant_provider_subject_reference text NULL
+- status text NOT NULL
+- requested_by_login_account_id uuid NULL
+- approved_by_login_account_id uuid NULL
+- rejected_by_login_account_id uuid NULL
+- provider_invitation_reference text NULL
+- completed_login_account_id uuid NULL
+- expires_at timestamptz NULL
+- completed_at timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- user_provisioning_request_id
+
+Foreign keys:
+
+- company_id → core.company(company_id)
+- requested_by_login_account_id
+  → security.login_account(login_account_id)
+- approved_by_login_account_id
+  → security.login_account(login_account_id)
+- rejected_by_login_account_id
+  → security.login_account(login_account_id)
+- completed_login_account_id
+  → security.login_account(login_account_id)
+
+Provisioning methods:
+
+- APPLICATION
+- INVITATION
+- BOOTSTRAP
+
+Status:
+
+- PENDING
+- APPROVED
+- REJECTED
+- EXPIRED
+- CANCELLED
+- COMPLETED
+
+A partial unique index prevents multiple open PENDING/APPROVED requests for
+the same company_id and normalized_requested_login_identifier.
+
+Raw provider invitation tokens or secrets are prohibited.
+
+## 4. security.authenticated_session
+
+Columns:
+
+- authenticated_session_id uuid NOT NULL DEFAULT gen_random_uuid()
+- login_account_id uuid NOT NULL
+- authentication_provider_code text NOT NULL
+- provider_session_reference text NOT NULL
+- status text NOT NULL
+- selected_company_id uuid NULL
+- authorization_version bigint NOT NULL
+- issued_at timestamptz NOT NULL DEFAULT now()
+- expires_at timestamptz NOT NULL
+- last_seen_at timestamptz NULL
+- revoked_at timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- authenticated_session_id
+
+Foreign keys:
+
+- login_account_id
+  → security.login_account(login_account_id)
+- selected_company_id
+  → core.company(company_id)
+
+Unique:
+
+- authentication_provider_code + provider_session_reference
+
+Status:
+
+- ACTIVE
+- EXPIRED
+- REVOKED
+
+Checks:
+
+- authorization_version > 0
+- expires_at > issued_at
+
+No FK is created to auth.sessions.
+
+For SUPABASE_AUTH provider_session_reference correlates with the trusted
+JWT session_id claim and auth.sessions.id.
+
+Raw access token and refresh token storage are prohibited.
+
+selected_company_id is valid only with an effective ACTIVE Membership for
+the same Login Account and Company.
+
+## 5. security.company_membership
+
+Columns:
+
+- company_membership_id uuid NOT NULL DEFAULT gen_random_uuid()
+- company_id uuid NOT NULL
+- login_account_id uuid NOT NULL
+- source_provisioning_request_id uuid NULL
+- status text NOT NULL
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- company_membership_id
+
+Foreign keys:
+
+- company_id → core.company(company_id)
+- login_account_id
+  → security.login_account(login_account_id)
+- source_provisioning_request_id
+  → security.user_provisioning_request(user_provisioning_request_id)
+
+Status:
+
+- INVITED
+- ACTIVE
+- SUSPENDED
+- ENDED
+
+Check:
+
+- effective_to IS NULL OR effective_to > effective_from
+
+Partial unique requirement:
+
+At most one open Membership for the same:
+
+- company_id
+- login_account_id
+
+where status is INVITED, ACTIVE, or SUSPENDED.
+
+Historical non-overlapping Memberships are allowed.
+
+Temporal overlap is prohibited.
+
+Temporal overlap is enforced by a DEFERRABLE security constraint trigger
+without requiring a new PostgreSQL extension.
+
+## 6. security.login_account_preference
+
+Columns:
+
+- login_account_id uuid NOT NULL
+- preferred_language_code text NULL
+- preferred_time_zone text NULL
+- last_selected_company_id uuid NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- login_account_id
+
+Foreign keys:
+
+- login_account_id
+  → security.login_account(login_account_id)
+- last_selected_company_id
+  → core.company(company_id)
+
+preferred_language_code is governed as BCP 47.
+
+preferred_time_zone is governed as an IANA time-zone identifier.
+
+Preference values grant no authorization.
+
+last_selected_company_id must always be revalidated before reuse.
+
+## 7. security.company_auth_policy
+
+Columns:
+
+- company_id uuid NOT NULL
+- required_aal text NOT NULL DEFAULT 'aal1'
+- session_idle_timeout_seconds integer NULL
+- session_absolute_timeout_seconds integer NULL
+- invitation_ttl_seconds integer NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- company_id
+
+Foreign key:
+
+- company_id → core.company(company_id)
+
+required_aal:
+
+- aal1
+- aal2
+
+Status:
+
+- ACTIVE
+- DISABLED
+
+Checks:
+
+- timeout values must be positive when non-null
+- invitation_ttl_seconds must be positive when non-null
+
+Provider MFA secrets are never persisted here.
+
+## 8. security.role_definition
+
+Columns:
+
+- role_definition_id uuid NOT NULL DEFAULT gen_random_uuid()
+- role_code text NOT NULL
+- role_name text NOT NULL
+- scope_type text NOT NULL
+- role_category text NOT NULL
+- module_code text NULL
+- role_origin text NOT NULL
+- owner_company_id uuid NULL
+- status text NOT NULL
+- is_reserved boolean NOT NULL DEFAULT false
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- role_definition_id
+
+Foreign key:
+
+- owner_company_id → core.company(company_id)
+
+scope_type:
+
+- system
+- company
+
+role_category:
+
+- administrative
+- business
+- approval
+- audit
+- system
+- service
+
+role_origin:
+
+- SYSTEM_BUILTIN
+- MODULE_BUILTIN
+- COMPANY_CUSTOM
+
+Status:
+
+- ACTIVE
+- DISABLED
+- DEPRECATED
+- RETIRED
+
+Rules:
+
+- COMPANY_CUSTOM requires scope_type=company
+- COMPANY_CUSTOM requires owner_company_id
+- non-COMPANY_CUSTOM requires owner_company_id IS NULL
+- MODULE_BUILTIN requires module_code
+- COMPANY_CUSTOM cannot take reserved common role codes
+- reserved roles are not mutated through ordinary company role APIs
+
+Unique requirements:
+
+- built-in role_code unique where owner_company_id IS NULL
+- company custom role_code unique within owner_company_id
+
+Reserved common role codes include:
+
+- COMPANY_SYSTEM_ADMIN
+- COMPANY_ADMIN
+- COMPANY_STAFF
+
+## 9. security.permission_definition
+
+Columns:
+
+- permission_definition_id uuid NOT NULL DEFAULT gen_random_uuid()
+- module_code text NULL
+- resource_code text NOT NULL
+- action_code text NOT NULL
+- description text NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- permission_definition_id
+
+Status:
+
+- ACTIVE
+- DISABLED
+- DEPRECATED
+- RETIRED
+
+Partial unique indexes:
+
+When module_code IS NULL:
+
+- resource_code + action_code
+
+When module_code IS NOT NULL:
+
+- module_code + resource_code + action_code
+
+Business permission meaning remains owned by the source business module.
+
+## 10. security.role_permission
+
+Columns:
+
+- role_permission_id uuid NOT NULL DEFAULT gen_random_uuid()
+- role_definition_id uuid NOT NULL
+- permission_definition_id uuid NOT NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- granted_by_login_account_id uuid NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- role_permission_id
+
+Foreign keys:
+
+- role_definition_id
+  → security.role_definition(role_definition_id)
+- permission_definition_id
+  → security.permission_definition(permission_definition_id)
+- granted_by_login_account_id
+  → security.login_account(login_account_id)
+
+Status:
+
+- ACTIVE
+- ENDED
+
+Rules:
+
+- effective_to IS NULL OR effective_to > effective_from
+- one open ACTIVE Role/Permission relationship per pair
+- overlapping effective Role/Permission periods are prohibited
+
+## 11. security.login_account_role_assignment
+
+Purpose:
+
+System-scoped human Role Assignment.
+
+Columns:
+
+- login_account_role_assignment_id uuid NOT NULL DEFAULT gen_random_uuid()
+- login_account_id uuid NOT NULL
+- role_definition_id uuid NOT NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- granted_by_login_account_id uuid NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- login_account_role_assignment_id
+
+Foreign keys:
+
+- login_account_id
+  → security.login_account(login_account_id)
+- role_definition_id
+  → security.role_definition(role_definition_id)
+- granted_by_login_account_id
+  → security.login_account(login_account_id)
+
+Rules:
+
+- only scope_type=system roles
+- role_category=service prohibited
+- one open ACTIVE assignment per Login Account/Role
+- overlapping effective periods prohibited
+
+## 12. security.membership_role_assignment
+
+Purpose:
+
+Company-scoped human Role Assignment.
+
+Columns:
+
+- membership_role_assignment_id uuid NOT NULL DEFAULT gen_random_uuid()
+- company_membership_id uuid NOT NULL
+- role_definition_id uuid NOT NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- granted_by_login_account_id uuid NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- membership_role_assignment_id
+
+Foreign keys:
+
+- company_membership_id
+  → security.company_membership(company_membership_id)
+- role_definition_id
+  → security.role_definition(role_definition_id)
+- granted_by_login_account_id
+  → security.login_account(login_account_id)
+
+Rules:
+
+- only scope_type=company roles
+- role_category=service prohibited
+- COMPANY_CUSTOM owner_company_id must match Membership company_id
+- one open ACTIVE assignment per Membership/Role
+- overlapping effective periods prohibited
+- last active COMPANY_SYSTEM_ADMIN guard applies
+
+## 13. security.service_identity
+
+Columns:
+
+- service_identity_id uuid NOT NULL DEFAULT gen_random_uuid()
+- service_code text NOT NULL
+- display_name text NOT NULL
+- service_identity_type text NOT NULL
+- status text NOT NULL
+- authorization_version bigint NOT NULL DEFAULT 1
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+- suspended_at timestamptz NULL
+- disabled_at timestamptz NULL
+- retired_at timestamptz NULL
+
+Primary key:
+
+- service_identity_id
+
+Unique:
+
+- service_code
+
+service_identity_type includes:
+
+- AI_WORKER
+- SERVICE
+
+Status:
+
+- PROVISIONED
+- ACTIVE
+- SUSPENDED
+- DISABLED
+- RETIRED
+
+Check:
+
+- authorization_version > 0
+
+Service Identity is never Login Account.
+
+## 14. security.service_credential
+
+Columns:
+
+- service_credential_id uuid NOT NULL DEFAULT gen_random_uuid()
+- service_identity_id uuid NOT NULL
+- credential_type text NOT NULL
+- credential_reference text NOT NULL
+- status text NOT NULL
+- valid_from timestamptz NOT NULL DEFAULT now()
+- expires_at timestamptz NULL
+- rotated_from_service_credential_id uuid NULL
+- revoked_at timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- service_credential_id
+
+Foreign keys:
+
+- service_identity_id
+  → security.service_identity(service_identity_id)
+- rotated_from_service_credential_id
+  → security.service_credential(service_credential_id)
+
+Unique:
+
+- credential_reference
+
+Status:
+
+- ACTIVE
+- REVOKED
+- EXPIRED
+
+Check:
+
+- expires_at IS NULL OR expires_at > valid_from
+
+credential_reference contains no plaintext secret.
+
+Controlled overlapping ACTIVE credentials are allowed for rotation.
+
+PHYSICAL_SERVICE_CREDENTIAL_STORE remains UNDECIDED.
+
+## 15. security.service_company_access
+
+Columns:
+
+- service_company_access_id uuid NOT NULL DEFAULT gen_random_uuid()
+- service_identity_id uuid NOT NULL
+- company_id uuid NOT NULL
+- status text NOT NULL
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- service_company_access_id
+
+Foreign keys:
+
+- service_identity_id
+  → security.service_identity(service_identity_id)
+- company_id
+  → core.company(company_id)
+
+Status:
+
+- ACTIVE
+- SUSPENDED
+- ENDED
+
+Rules:
+
+- one simultaneously effective access relation per Service Identity/Company
+- historical non-overlap allowed
+- effective overlap prohibited
+- overlap enforced by DEFERRABLE constraint trigger
+
+## 16. security.service_role_assignment
+
+Columns:
+
+- service_role_assignment_id uuid NOT NULL DEFAULT gen_random_uuid()
+- service_identity_id uuid NOT NULL
+- service_company_access_id uuid NULL
+- role_definition_id uuid NOT NULL
+- status text NOT NULL DEFAULT 'ACTIVE'
+- effective_from timestamptz NOT NULL DEFAULT now()
+- effective_to timestamptz NULL
+- granted_by_login_account_id uuid NULL
+- created_at timestamptz NOT NULL DEFAULT now()
+- updated_at timestamptz NOT NULL DEFAULT now()
+
+Primary key:
+
+- service_role_assignment_id
+
+Foreign keys:
+
+- service_identity_id
+  → security.service_identity(service_identity_id)
+- service_company_access_id
+  → security.service_company_access(service_company_access_id)
+- role_definition_id
+  → security.role_definition(role_definition_id)
+- granted_by_login_account_id
+  → security.login_account(login_account_id)
+
+Rules:
+
+- only role_category=service
+- company role requires service_company_access_id
+- company access must belong to the same Service Identity
+- company access must be ACTIVE and effective
+- system role requires service_company_access_id IS NULL
+- one open ACTIVE assignment per effective Service/Company/Role context
+- overlapping effective assignment periods prohibited
+
+## REQUIRED SUPPORTING INDEXES
+
+Required index families include:
+
+- login_identity_binding(login_account_id)
+- login_identity_binding(authentication_provider_code,
+  authentication_subject_reference)
+- user_provisioning_request(company_id,status)
+- authenticated_session(login_account_id,status)
+- authenticated_session(authentication_provider_code,
+  provider_session_reference)
+- company_membership(login_account_id,status)
+- company_membership(company_id,status)
+- role_permission(role_definition_id,status)
+- role_permission(permission_definition_id,status)
+- login_account_role_assignment(login_account_id,status)
+- membership_role_assignment(company_membership_id,status)
+- permission_definition(module_code,resource_code,action_code)
+- service_credential(service_identity_id,status)
+- service_company_access(service_identity_id,company_id,status)
+- service_role_assignment(service_identity_id,status)
+
+## REQUIRED CONSTRAINT TRIGGERS
+
+Constraint-trigger enforcement is required for:
+
+- Membership temporal non-overlap
+- Service Company Access temporal non-overlap
+- Role/Permission temporal non-overlap
+- human Role Assignment temporal non-overlap
+- service Role Assignment temporal non-overlap
+- role scope/category compatibility
+- COMPANY_CUSTOM owner-company compatibility
+- authenticated selected-company Membership validity
+- final active COMPANY_SYSTEM_ADMIN protection
+
+These functions reside in schema security, not public.
+
+## AUTHORIZATION INVALIDATION
+
+Human authorization_version increments when effective authorization may
+change through:
+
+- Login Account status
+- Company Membership
+- Login Account Role Assignment
+- Membership Role Assignment
+- effective Role Definition
+- effective Role-Permission
+
+Service authorization_version increments when effective authorization may
+change through:
+
+- Service Identity status
+- Service Company Access
+- Service Role Assignment
+- effective service Role Definition
+- effective Role-Permission
+
+The version increment invalidates stale authorization snapshots.
+
+# ERP LOGIN / AUTH PHYSICAL EXACTNESS V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_PHYSICAL_EXACTNESS_V1
+
+This section closes the physical exactness requirements for constraints,
+referential actions, indexes, partial predicates, and text checks.
+
+## EXACT FOREIGN KEY REFERENTIAL ACTION
+
+Every canonical foreign key in the sixteen security authority tables uses:
+
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+NOT DEFERRABLE INITIALLY IMMEDIATE
+
+There are no foreign-key exceptions in this version.
+
+In particular, no security authority FK uses ON DELETE CASCADE.
+
+Lifecycle retirement is performed by governed status/effective-period
+mutation rather than cascading physical deletion.
+
+Constraint triggers described separately may be DEFERRABLE. This does not
+change ordinary FK deferrability.
+
+## EXACT CONSTRAINT NAME REGISTRY
+
+### security.login_account
+
+CONSTRAINT pk_login_account PRIMARY KEY
+CONSTRAINT uq_login_account__norm_ident UNIQUE
+CONSTRAINT ck_login_account__status CHECK
+CONSTRAINT ck_login_account__norm_ident_nonblank CHECK
+CONSTRAINT ck_login_account__auth_ver CHECK
+
+Exact checks:
+
+CHECK (btrim(normalized_login_identifier) <> '')
+CHECK (btrim(login_identifier) <> '')
+CHECK (status IN ('INVITED','ACTIVE','SUSPENDED','DISABLED'))
+CHECK (authorization_version > 0)
+
+### security.login_identity_binding
+
+CONSTRAINT pk_login_identity_binding PRIMARY KEY
+CONSTRAINT fk_lib__login_account FOREIGN KEY
+CONSTRAINT uq_lib__provider_subject UNIQUE
+CONSTRAINT ck_lib__status CHECK
+CONSTRAINT ck_lib__provider_nonblank CHECK
+CONSTRAINT ck_lib__subject_nonblank CHECK
+
+FK:
+
+login_account_id
+REFERENCES security.login_account(login_account_id)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+
+Exact checks:
+
+CHECK (binding_status IN ('ACTIVE','REVOKED'))
+CHECK (btrim(authentication_provider_code) <> '')
+CHECK (btrim(authentication_subject_reference) <> '')
+
+### security.user_provisioning_request
+
+CONSTRAINT pk_user_provisioning_request PRIMARY KEY
+CONSTRAINT fk_upr__company FOREIGN KEY
+CONSTRAINT fk_upr__requested_by FOREIGN KEY
+CONSTRAINT fk_upr__approved_by FOREIGN KEY
+CONSTRAINT fk_upr__rejected_by FOREIGN KEY
+CONSTRAINT fk_upr__completed_account FOREIGN KEY
+CONSTRAINT ck_upr__method CHECK
+CONSTRAINT ck_upr__status CHECK
+CONSTRAINT ck_upr__requested_ident_nonblank CHECK
+CONSTRAINT ck_upr__norm_ident_nonblank CHECK
+CONSTRAINT ck_upr__provider_ref_nonblank CHECK
+CONSTRAINT ck_upr__expiry CHECK
+
+All five FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (provisioning_method IN ('APPLICATION','INVITATION','BOOTSTRAP'))
+CHECK (status IN (
+  'PENDING','APPROVED','REJECTED','EXPIRED','CANCELLED','COMPLETED'
+))
+CHECK (btrim(requested_login_identifier) <> '')
+CHECK (btrim(normalized_requested_login_identifier) <> '')
+CHECK (
+  provider_invitation_reference IS NULL
+  OR btrim(provider_invitation_reference) <> ''
+)
+CHECK (expires_at IS NULL OR expires_at > created_at)
+
+### security.authenticated_session
+
+CONSTRAINT pk_authenticated_session PRIMARY KEY
+CONSTRAINT fk_as__login_account FOREIGN KEY
+CONSTRAINT fk_as__selected_company FOREIGN KEY
+CONSTRAINT uq_as__provider_session UNIQUE
+CONSTRAINT ck_as__status CHECK
+CONSTRAINT ck_as__provider_nonblank CHECK
+CONSTRAINT ck_as__session_ref_nonblank CHECK
+CONSTRAINT ck_as__auth_ver CHECK
+CONSTRAINT ck_as__expiry CHECK
+
+Both FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','EXPIRED','REVOKED'))
+CHECK (btrim(authentication_provider_code) <> '')
+CHECK (btrim(provider_session_reference) <> '')
+CHECK (authorization_version > 0)
+CHECK (expires_at > issued_at)
+
+### security.company_membership
+
+CONSTRAINT pk_company_membership PRIMARY KEY
+CONSTRAINT fk_cm__company FOREIGN KEY
+CONSTRAINT fk_cm__login_account FOREIGN KEY
+CONSTRAINT fk_cm__source_request FOREIGN KEY
+CONSTRAINT ck_cm__status CHECK
+CONSTRAINT ck_cm__period CHECK
+
+All three FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('INVITED','ACTIVE','SUSPENDED','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+### security.login_account_preference
+
+CONSTRAINT pk_login_account_preference PRIMARY KEY
+CONSTRAINT fk_lap__login_account FOREIGN KEY
+CONSTRAINT fk_lap__last_company FOREIGN KEY
+CONSTRAINT ck_lap__language_nonblank CHECK
+CONSTRAINT ck_lap__timezone_nonblank CHECK
+
+Both FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (
+  preferred_language_code IS NULL
+  OR btrim(preferred_language_code) <> ''
+)
+CHECK (
+  preferred_time_zone IS NULL
+  OR btrim(preferred_time_zone) <> ''
+)
+
+### security.company_auth_policy
+
+CONSTRAINT pk_company_auth_policy PRIMARY KEY
+CONSTRAINT fk_cap__company FOREIGN KEY
+CONSTRAINT ck_cap__aal CHECK
+CONSTRAINT ck_cap__status CHECK
+CONSTRAINT ck_cap__idle_timeout CHECK
+CONSTRAINT ck_cap__absolute_timeout CHECK
+CONSTRAINT ck_cap__invitation_ttl CHECK
+
+FK uses ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (required_aal IN ('aal1','aal2'))
+CHECK (status IN ('ACTIVE','DISABLED'))
+CHECK (
+  session_idle_timeout_seconds IS NULL
+  OR session_idle_timeout_seconds > 0
+)
+CHECK (
+  session_absolute_timeout_seconds IS NULL
+  OR session_absolute_timeout_seconds > 0
+)
+CHECK (
+  invitation_ttl_seconds IS NULL
+  OR invitation_ttl_seconds > 0
+)
+
+### security.role_definition
+
+CONSTRAINT pk_role_definition PRIMARY KEY
+CONSTRAINT fk_rd__owner_company FOREIGN KEY
+CONSTRAINT ck_rd__role_code_nonblank CHECK
+CONSTRAINT ck_rd__role_name_nonblank CHECK
+CONSTRAINT ck_rd__module_nonblank CHECK
+CONSTRAINT ck_rd__scope CHECK
+CONSTRAINT ck_rd__category CHECK
+CONSTRAINT ck_rd__origin CHECK
+CONSTRAINT ck_rd__status CHECK
+CONSTRAINT ck_rd__origin_scope_owner CHECK
+
+FK uses ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (btrim(role_code) <> '')
+CHECK (btrim(role_name) <> '')
+CHECK (module_code IS NULL OR btrim(module_code) <> '')
+CHECK (scope_type IN ('system','company'))
+CHECK (role_category IN (
+  'administrative','business','approval','audit','system','service'
+))
+CHECK (role_origin IN (
+  'SYSTEM_BUILTIN','MODULE_BUILTIN','COMPANY_CUSTOM'
+))
+CHECK (status IN ('ACTIVE','DISABLED','DEPRECATED','RETIRED'))
+CHECK (
+  (
+    role_origin = 'COMPANY_CUSTOM'
+    AND scope_type = 'company'
+    AND owner_company_id IS NOT NULL
+  )
+  OR
+  (
+    role_origin <> 'COMPANY_CUSTOM'
+    AND owner_company_id IS NULL
+  )
+)
+
+MODULE_BUILTIN additionally requires module_code IS NOT NULL and is
+enforced by the role validation trigger.
+
+### security.permission_definition
+
+CONSTRAINT pk_permission_definition PRIMARY KEY
+CONSTRAINT ck_pd__resource_nonblank CHECK
+CONSTRAINT ck_pd__action_nonblank CHECK
+CONSTRAINT ck_pd__module_nonblank CHECK
+CONSTRAINT ck_pd__status CHECK
+
+Exact checks:
+
+CHECK (btrim(resource_code) <> '')
+CHECK (btrim(action_code) <> '')
+CHECK (module_code IS NULL OR btrim(module_code) <> '')
+CHECK (status IN ('ACTIVE','DISABLED','DEPRECATED','RETIRED'))
+
+### security.role_permission
+
+CONSTRAINT pk_role_permission PRIMARY KEY
+CONSTRAINT fk_rp__role FOREIGN KEY
+CONSTRAINT fk_rp__permission FOREIGN KEY
+CONSTRAINT fk_rp__granted_by FOREIGN KEY
+CONSTRAINT ck_rp__status CHECK
+CONSTRAINT ck_rp__period CHECK
+
+All three FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+### security.login_account_role_assignment
+
+CONSTRAINT pk_login_account_role_assignment PRIMARY KEY
+CONSTRAINT fk_lara__login_account FOREIGN KEY
+CONSTRAINT fk_lara__role FOREIGN KEY
+CONSTRAINT fk_lara__granted_by FOREIGN KEY
+CONSTRAINT ck_lara__status CHECK
+CONSTRAINT ck_lara__period CHECK
+
+All three FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+### security.membership_role_assignment
+
+CONSTRAINT pk_membership_role_assignment PRIMARY KEY
+CONSTRAINT fk_mra__membership FOREIGN KEY
+CONSTRAINT fk_mra__role FOREIGN KEY
+CONSTRAINT fk_mra__granted_by FOREIGN KEY
+CONSTRAINT ck_mra__status CHECK
+CONSTRAINT ck_mra__period CHECK
+
+All three FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+### security.service_identity
+
+CONSTRAINT pk_service_identity PRIMARY KEY
+CONSTRAINT uq_si__service_code UNIQUE
+CONSTRAINT ck_si__service_code_nonblank CHECK
+CONSTRAINT ck_si__display_name_nonblank CHECK
+CONSTRAINT ck_si__type CHECK
+CONSTRAINT ck_si__status CHECK
+CONSTRAINT ck_si__auth_ver CHECK
+
+Exact checks:
+
+CHECK (btrim(service_code) <> '')
+CHECK (btrim(display_name) <> '')
+CHECK (service_identity_type IN ('AI_WORKER','SERVICE'))
+CHECK (
+  status IN ('PROVISIONED','ACTIVE','SUSPENDED','DISABLED','RETIRED')
+)
+CHECK (authorization_version > 0)
+
+### security.service_credential
+
+CONSTRAINT pk_service_credential PRIMARY KEY
+CONSTRAINT fk_sc__identity FOREIGN KEY
+CONSTRAINT fk_sc__rotated_from FOREIGN KEY
+CONSTRAINT uq_sc__credential_ref UNIQUE
+CONSTRAINT ck_sc__type_nonblank CHECK
+CONSTRAINT ck_sc__ref_nonblank CHECK
+CONSTRAINT ck_sc__status CHECK
+CONSTRAINT ck_sc__period CHECK
+CONSTRAINT ck_sc__not_self_rotated CHECK
+
+Both FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (btrim(credential_type) <> '')
+CHECK (btrim(credential_reference) <> '')
+CHECK (status IN ('ACTIVE','REVOKED','EXPIRED'))
+CHECK (expires_at IS NULL OR expires_at > valid_from)
+CHECK (
+  rotated_from_service_credential_id IS NULL
+  OR rotated_from_service_credential_id <> service_credential_id
+)
+
+### security.service_company_access
+
+CONSTRAINT pk_service_company_access PRIMARY KEY
+CONSTRAINT fk_sca__identity FOREIGN KEY
+CONSTRAINT fk_sca__company FOREIGN KEY
+CONSTRAINT ck_sca__status CHECK
+CONSTRAINT ck_sca__period CHECK
+
+Both FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','SUSPENDED','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+### security.service_role_assignment
+
+CONSTRAINT pk_service_role_assignment PRIMARY KEY
+CONSTRAINT fk_sra__identity FOREIGN KEY
+CONSTRAINT fk_sra__company_access FOREIGN KEY
+CONSTRAINT fk_sra__role FOREIGN KEY
+CONSTRAINT fk_sra__granted_by FOREIGN KEY
+CONSTRAINT ck_sra__status CHECK
+CONSTRAINT ck_sra__period CHECK
+
+All four FKs use ON UPDATE NO ACTION and ON DELETE NO ACTION.
+
+Exact checks:
+
+CHECK (status IN ('ACTIVE','ENDED'))
+CHECK (effective_to IS NULL OR effective_to > effective_from)
+
+## EXACT INDEX REGISTRY AND PARTIAL PREDICATES
+
+CREATE INDEX ix_lib__login_account
+ON security.login_identity_binding(login_account_id);
+
+CREATE UNIQUE INDEX ux_lib__active_account_provider
+ON security.login_identity_binding(
+  login_account_id,
+  authentication_provider_code
+)
+WHERE binding_status = 'ACTIVE';
+
+CREATE UNIQUE INDEX ux_lib__active_primary_account
+ON security.login_identity_binding(login_account_id)
+WHERE binding_status = 'ACTIVE' AND is_primary = true;
+
+CREATE INDEX ix_upr__company_status
+ON security.user_provisioning_request(company_id,status);
+
+CREATE UNIQUE INDEX ux_upr__open_company_identifier
+ON security.user_provisioning_request(
+  company_id,
+  normalized_requested_login_identifier
+)
+WHERE status IN ('PENDING','APPROVED');
+
+CREATE INDEX ix_as__account_status
+ON security.authenticated_session(login_account_id,status);
+
+CREATE INDEX ix_cm__account_status
+ON security.company_membership(login_account_id,status);
+
+CREATE INDEX ix_cm__company_status
+ON security.company_membership(company_id,status);
+
+CREATE UNIQUE INDEX ux_cm__open_company_account
+ON security.company_membership(company_id,login_account_id)
+WHERE
+  effective_to IS NULL
+  AND status IN ('INVITED','ACTIVE','SUSPENDED');
+
+CREATE UNIQUE INDEX ux_rd__builtin_role_code
+ON security.role_definition(role_code)
+WHERE owner_company_id IS NULL;
+
+CREATE UNIQUE INDEX ux_rd__company_role_code
+ON security.role_definition(owner_company_id,role_code)
+WHERE owner_company_id IS NOT NULL;
+
+CREATE UNIQUE INDEX ux_pd__global_resource_action
+ON security.permission_definition(resource_code,action_code)
+WHERE module_code IS NULL;
+
+CREATE UNIQUE INDEX ux_pd__module_resource_action
+ON security.permission_definition(module_code,resource_code,action_code)
+WHERE module_code IS NOT NULL;
+
+CREATE INDEX ix_rp__role_status
+ON security.role_permission(role_definition_id,status);
+
+CREATE INDEX ix_rp__permission_status
+ON security.role_permission(permission_definition_id,status);
+
+CREATE UNIQUE INDEX ux_rp__open_role_permission
+ON security.role_permission(
+  role_definition_id,
+  permission_definition_id
+)
+WHERE status = 'ACTIVE' AND effective_to IS NULL;
+
+CREATE INDEX ix_lara__account_status
+ON security.login_account_role_assignment(login_account_id,status);
+
+CREATE UNIQUE INDEX ux_lara__open_account_role
+ON security.login_account_role_assignment(
+  login_account_id,
+  role_definition_id
+)
+WHERE status = 'ACTIVE' AND effective_to IS NULL;
+
+CREATE INDEX ix_mra__membership_status
+ON security.membership_role_assignment(company_membership_id,status);
+
+CREATE UNIQUE INDEX ux_mra__open_membership_role
+ON security.membership_role_assignment(
+  company_membership_id,
+  role_definition_id
+)
+WHERE status = 'ACTIVE' AND effective_to IS NULL;
+
+CREATE INDEX ix_sc__identity_status
+ON security.service_credential(service_identity_id,status);
+
+CREATE INDEX ix_sca__identity_company_status
+ON security.service_company_access(
+  service_identity_id,
+  company_id,
+  status
+);
+
+CREATE UNIQUE INDEX ux_sca__open_identity_company
+ON security.service_company_access(service_identity_id,company_id)
+WHERE
+  effective_to IS NULL
+  AND status IN ('ACTIVE','SUSPENDED');
+
+CREATE INDEX ix_sra__identity_status
+ON security.service_role_assignment(service_identity_id,status);
+
+CREATE UNIQUE INDEX ux_sra__open_system_role
+ON security.service_role_assignment(
+  service_identity_id,
+  role_definition_id
+)
+WHERE
+  status = 'ACTIVE'
+  AND effective_to IS NULL
+  AND service_company_access_id IS NULL;
+
+CREATE UNIQUE INDEX ux_sra__open_company_role
+ON security.service_role_assignment(
+  service_identity_id,
+  service_company_access_id,
+  role_definition_id
+)
+WHERE
+  status = 'ACTIVE'
+  AND effective_to IS NULL
+  AND service_company_access_id IS NOT NULL;
+
+## CONSTRAINT / INDEX NAME STABILITY
+
+The names defined above are canonical physical names.
+
+04 migration SQL must use these names exactly unless a later canonical
+design change explicitly supersedes them.
+
+Implicit PostgreSQL indexes created by PRIMARY KEY or UNIQUE constraints
+use their canonical constraint names.
+
+No implementation may generate environment-specific names for these
+canonical objects.
+
+# ERP LOGIN / AUTH SEMANTIC EXACTNESS CLOSURE V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_SEMANTIC_CLOSURE_V1
+
+This section closes the remaining exact physical semantic gaps without
+changing the sixteen-table authority model.
+
+## LOGIN IDENTIFIER CHECK NAME
+
+The previously specified Login Account nonblank identifier check has the
+following canonical physical name:
+
+CONSTRAINT ck_login_account__ident_nonblank
+CHECK (btrim(login_identifier) <> '')
+
+The normalized identifier check remains:
+
+CONSTRAINT ck_login_account__norm_ident_nonblank
+CHECK (btrim(normalized_login_identifier) <> '')
+
+Both checks are required.
+
+## ROLE DEFINITION ADDITIONAL EXACT CHECKS
+
+The MODULE_BUILTIN module association rule is enforced physically by:
+
+CONSTRAINT ck_rd__module_origin
+CHECK (
+  role_origin <> 'MODULE_BUILTIN'
+  OR module_code IS NOT NULL
+)
+
+The COMPANY_CUSTOM reserved common-role protection is enforced physically
+by:
+
+CONSTRAINT ck_rd__reserved_custom_code
+CHECK (
+  role_origin <> 'COMPANY_CUSTOM'
+  OR upper(btrim(role_code)) NOT IN (
+    'COMPANY_SYSTEM_ADMIN',
+    'COMPANY_ADMIN',
+    'COMPANY_STAFF'
+  )
+)
+
+This protection is case-insensitive with respect to attempted custom-role
+creation.
+
+Therefore a Company Custom Role cannot evade the reserved-role boundary
+through letter-case variation.
+
+These checks complement, and do not replace:
+
+- ck_rd__role_code_nonblank;
+- ck_rd__module_nonblank;
+- ck_rd__scope;
+- ck_rd__category;
+- ck_rd__origin;
+- ck_rd__status;
+- ck_rd__origin_scope_owner.
+
+## AUTHORIZATION PROPAGATION REVERSE INDEXES
+
+Role Definition and Role-Permission invalidation must efficiently find
+every principal currently assigned the affected Role.
+
+The following additional physical indexes are canonical:
+
+CREATE INDEX ix_lara__role_status
+ON security.login_account_role_assignment(
+  role_definition_id,
+  status
+);
+
+CREATE INDEX ix_mra__role_status
+ON security.membership_role_assignment(
+  role_definition_id,
+  status
+);
+
+CREATE INDEX ix_sra__role_status
+ON security.service_role_assignment(
+  role_definition_id,
+  status
+);
+
+These indexes support the reverse authorization propagation paths:
+
+role_definition
+→ login_account_role_assignment
+→ login_account
+
+role_definition
+→ membership_role_assignment
+→ company_membership
+→ login_account
+
+role_definition
+→ service_role_assignment
+→ service_identity.
+
+They do not themselves define authorization semantics.

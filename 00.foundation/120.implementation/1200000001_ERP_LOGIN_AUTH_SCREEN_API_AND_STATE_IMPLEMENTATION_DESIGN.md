@@ -353,3 +353,586 @@ It requires:
 - Service Role Assignment;
 - suspension/revocation;
 - audit.
+
+# ERP LOGIN / AUTH EXACT IMPLEMENTATION DESIGN V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+The later 04 implementation bundle must contain separately reviewable
+units for:
+
+1. security schema creation
+2. sixteen authority tables
+3. PK/FK/CHECK constraints
+4. ordinary and partial indexes
+5. RLS enablement
+6. privilege revocation
+7. current-session/current-company helper functions
+8. temporal constraint triggers
+9. Role scope/category validation
+10. last COMPANY_SYSTEM_ADMIN guard
+11. authorization-version invalidation
+12. explicit canonical Role/Permission bootstrap seeds
+13. Provider Binding support
+14. ERP Session binding
+15. integration.my_company_id() compatibility replacement
+16. twelve direct auth.uid() policy remediations
+17. legacy actor migration after semantic classification
+18. adoption verification
+19. failure/forward-repair verification
+
+Completed P0 migration history is not rewritten.
+
+## CREATION DEPENDENCY ORDER
+
+security schema
+→ login_account
+→ login_identity_binding
+→ user_provisioning_request
+→ company_membership
+→ login_account_preference
+→ company_auth_policy
+→ role_definition
+→ permission_definition
+→ role_permission
+→ human Role Assignments
+→ service_identity
+→ service_credential
+→ service_company_access
+→ service_role_assignment
+→ authenticated_session
+→ helper functions
+→ constraint/invalidation triggers
+→ RLS/grants
+→ compatibility cutover.
+
+## EXISTING PROVIDER USER
+
+Current evidence contains one auth.users row while canonical ERP Login
+Account persistence does not yet exist.
+
+Discovery of auth.users does not automatically create ERP authorization.
+
+Bootstrap requires governed provisioning/binding.
+
+## PROVIDER REFERENCES
+
+No implementation FK is created from security to:
+
+- auth.users
+- auth.identities
+- auth.sessions
+- auth.refresh_tokens
+
+Provider integrity is established by trusted provisioning and runtime
+validation.
+
+## LEGACY ACTOR MIGRATION MATRIX
+
+The fourteen currently empty core.app_user FK targets requiring
+classification are:
+
+- compliance.audit_action.owner_id
+- core.company_users.user_id
+- core.journal_entries.created_by
+- core.login_history.user_id
+- core.status_history.changed_by
+- core.user_permissions.user_id
+- hr.leave_request.approved_by
+- purchase.purchase_order_header.created_by
+- purchase.purchase_requisition.requester_id
+- sales.billing_header.created_by
+- sales.order_header.created_by
+- sales.return_header.created_by
+- sales.sales_quotation.created_by
+- sales.shipping_header.created_by
+
+For each target, the implementation bundle must record:
+
+- current semantic;
+- target actor class;
+- target identifier;
+- target FK/check strategy;
+- RLS impact;
+- compatibility impact;
+- forward-repair strategy.
+
+No automatic repoint is allowed.
+
+## LEGACY ROLE DATA
+
+Existing:
+
+- governance.role
+- governance.role_permission
+- system.role_def
+- system.role_screen_permission
+
+are not automatically copied into canonical Role/Permission authority.
+
+Explicit reviewed seeds are required.
+
+COMPANY_STAFF receives no module privilege by default.
+
+## PUBLIC BOUNDARY
+
+No new security:
+
+- table;
+- sequence;
+- materialized view;
+- function/procedure
+
+is created in public.
+
+Existing public ordinary read-only compatibility views remain legacy
+interfaces only.
+
+## THIS CHANGE UNIT
+
+This canonical change does not:
+
+- CREATE SCHEMA security;
+- CREATE any DB object;
+- mutate 04;
+- replace integration.my_company_id();
+- modify RLS;
+- migrate legacy data;
+- stage;
+- commit;
+- push.
+
+# ERP LOGIN / AUTH EXACT TRIGGER REGISTRY V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_PHYSICAL_EXACTNESS_V1
+
+## EXACT TRIGGER FUNCTION NAMES
+
+The canonical security trigger-function registry is:
+
+- security.fn_set_updated_at()
+- security.fn_bump_own_authorization_version()
+- security.fn_guard_company_membership_overlap()
+- security.fn_guard_role_permission_overlap()
+- security.fn_guard_login_account_role_overlap()
+- security.fn_guard_membership_role_overlap()
+- security.fn_guard_service_company_access_overlap()
+- security.fn_guard_service_role_overlap()
+- security.fn_validate_authenticated_session_company()
+- security.fn_validate_login_account_role_assignment()
+- security.fn_validate_membership_role_assignment()
+- security.fn_validate_service_role_assignment()
+- security.fn_guard_last_company_system_admin()
+- security.fn_bump_human_authz_from_membership()
+- security.fn_bump_human_authz_from_lara()
+- security.fn_bump_human_authz_from_mra()
+- security.fn_bump_authz_from_role_definition()
+- security.fn_bump_authz_from_role_permission()
+- security.fn_bump_service_authz_from_access()
+- security.fn_bump_service_authz_from_sra()
+
+These names are physical canonical names.
+
+## UPDATED_AT TRIGGERS
+
+The exact trigger names are:
+
+CREATE TRIGGER trg_login_account__set_updated_at
+BEFORE UPDATE ON security.login_account
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_login_identity_binding__set_updated_at
+BEFORE UPDATE ON security.login_identity_binding
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_user_provisioning_request__set_updated_at
+BEFORE UPDATE ON security.user_provisioning_request
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_authenticated_session__set_updated_at
+BEFORE UPDATE ON security.authenticated_session
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_company_membership__set_updated_at
+BEFORE UPDATE ON security.company_membership
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_login_account_preference__set_updated_at
+BEFORE UPDATE ON security.login_account_preference
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_company_auth_policy__set_updated_at
+BEFORE UPDATE ON security.company_auth_policy
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_role_definition__set_updated_at
+BEFORE UPDATE ON security.role_definition
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_permission_definition__set_updated_at
+BEFORE UPDATE ON security.permission_definition
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_role_permission__set_updated_at
+BEFORE UPDATE ON security.role_permission
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_login_account_role_assignment__set_updated_at
+BEFORE UPDATE ON security.login_account_role_assignment
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_membership_role_assignment__set_updated_at
+BEFORE UPDATE ON security.membership_role_assignment
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_service_identity__set_updated_at
+BEFORE UPDATE ON security.service_identity
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_service_credential__set_updated_at
+BEFORE UPDATE ON security.service_credential
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_service_company_access__set_updated_at
+BEFORE UPDATE ON security.service_company_access
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+CREATE TRIGGER trg_service_role_assignment__set_updated_at
+BEFORE UPDATE ON security.service_role_assignment
+FOR EACH ROW EXECUTE FUNCTION security.fn_set_updated_at();
+
+## TEMPORAL CONSTRAINT TRIGGERS
+
+CREATE CONSTRAINT TRIGGER ct_company_membership__no_overlap
+AFTER INSERT OR UPDATE ON security.company_membership
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_company_membership_overlap();
+
+CREATE CONSTRAINT TRIGGER ct_role_permission__no_overlap
+AFTER INSERT OR UPDATE ON security.role_permission
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_role_permission_overlap();
+
+CREATE CONSTRAINT TRIGGER ct_lara__no_overlap
+AFTER INSERT OR UPDATE ON security.login_account_role_assignment
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_login_account_role_overlap();
+
+CREATE CONSTRAINT TRIGGER ct_mra__no_overlap
+AFTER INSERT OR UPDATE ON security.membership_role_assignment
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_membership_role_overlap();
+
+CREATE CONSTRAINT TRIGGER ct_service_company_access__no_overlap
+AFTER INSERT OR UPDATE ON security.service_company_access
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_service_company_access_overlap();
+
+CREATE CONSTRAINT TRIGGER ct_service_role_assignment__no_overlap
+AFTER INSERT OR UPDATE ON security.service_role_assignment
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_service_role_overlap();
+
+The overlap routines serialize competing writes for the relevant natural
+authorization key before validating overlap.
+
+The implementation uses a transaction-scoped advisory lock derived from
+the relevant identity/company/role key before reading competing effective
+rows.
+
+Hash collision may serialize unrelated transactions but must not permit an
+overlap violation.
+
+## ROLE / SESSION VALIDATION TRIGGERS
+
+CREATE TRIGGER trg_authenticated_session__validate_company
+BEFORE INSERT OR UPDATE
+ON security.authenticated_session
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_validate_authenticated_session_company();
+
+CREATE TRIGGER trg_lara__validate_role
+BEFORE INSERT OR UPDATE
+ON security.login_account_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_validate_login_account_role_assignment();
+
+CREATE TRIGGER trg_mra__validate_role
+BEFORE INSERT OR UPDATE
+ON security.membership_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_validate_membership_role_assignment();
+
+CREATE TRIGGER trg_sra__validate_role
+BEFORE INSERT OR UPDATE
+ON security.service_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_validate_service_role_assignment();
+
+## FINAL COMPANY SYSTEM ADMIN GUARD
+
+CREATE CONSTRAINT TRIGGER ct_company_membership__last_admin
+AFTER UPDATE OR DELETE
+ON security.company_membership
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_last_company_system_admin();
+
+CREATE CONSTRAINT TRIGGER ct_membership_role_assignment__last_admin
+AFTER UPDATE OR DELETE
+ON security.membership_role_assignment
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_last_company_system_admin();
+
+CREATE CONSTRAINT TRIGGER ct_role_definition__last_admin
+AFTER UPDATE
+ON security.role_definition
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_guard_last_company_system_admin();
+
+The guard evaluates effective ACTIVE Membership plus effective ACTIVE
+COMPANY_SYSTEM_ADMIN assignment at transaction end.
+
+A replacement and removal may therefore occur atomically in one
+transaction without depending on statement order.
+
+## AUTHORIZATION VERSION TRIGGERS
+
+Login Account self-status change:
+
+CREATE TRIGGER trg_login_account__authz_self
+BEFORE UPDATE OF status
+ON security.login_account
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_own_authorization_version();
+
+Service Identity self-status change:
+
+CREATE TRIGGER trg_service_identity__authz_self
+BEFORE UPDATE OF status
+ON security.service_identity
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_own_authorization_version();
+
+Human Membership change:
+
+CREATE TRIGGER trg_company_membership__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.company_membership
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_human_authz_from_membership();
+
+System human Role Assignment change:
+
+CREATE TRIGGER trg_lara__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.login_account_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_human_authz_from_lara();
+
+Company human Role Assignment change:
+
+CREATE TRIGGER trg_mra__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.membership_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_human_authz_from_mra();
+
+Role Definition authorization change:
+
+CREATE TRIGGER trg_role_definition__authz
+AFTER UPDATE
+ON security.role_definition
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_authz_from_role_definition();
+
+Role-Permission change:
+
+CREATE TRIGGER trg_role_permission__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.role_permission
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_authz_from_role_permission();
+
+Service Company Access change:
+
+CREATE TRIGGER trg_service_company_access__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.service_company_access
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_service_authz_from_access();
+
+Service Role Assignment change:
+
+CREATE TRIGGER trg_sra__authz
+AFTER INSERT OR UPDATE OR DELETE
+ON security.service_role_assignment
+FOR EACH ROW
+EXECUTE FUNCTION security.fn_bump_service_authz_from_sra();
+
+## AUTHORIZATION VERSION PROPAGATION
+
+Role Definition and Role-Permission trigger functions must update every
+currently affected human Login Account and Service Identity.
+
+Human resolution paths are:
+
+role_definition
+→ login_account_role_assignment
+→ login_account
+
+and:
+
+role_definition
+→ membership_role_assignment
+→ company_membership
+→ login_account.
+
+Service resolution path is:
+
+role_definition
+→ service_role_assignment
+→ service_identity.
+
+Role-Permission invalidation first resolves its role_definition_id and then
+uses the same three assignment paths.
+
+Each affected principal is incremented at most once per trigger execution.
+
+authorization_version update is:
+
+authorization_version = authorization_version + 1.
+
+The implementation must not assign a lower value or reset the version.
+
+## TRIGGER SECURITY
+
+All security trigger functions:
+
+- reside in schema security;
+- are not created in public;
+- are not directly callable by anon;
+- are not directly callable by authenticated unless separately listed in
+  the canonical EXECUTE matrix;
+- use explicit schema-qualified object names;
+- use a locked search_path when SECURITY DEFINER is required.
+
+# ERP LOGIN / AUTH EXACT RESOLVER IMPLEMENTATION ATTRIBUTES V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_SEMANTIC_CLOSURE_V1
+
+The future 04 implementation bundle must encode the following function
+attributes exactly.
+
+## security.current_provider_session_reference()
+
+- schema: security
+- arguments: none
+- return: text
+- security mode: SECURITY INVOKER
+- privileged security-table read: NO
+- caller-controlled authority arguments: NONE
+
+## security.current_aal()
+
+- schema: security
+- arguments: none
+- return: text
+- security mode: SECURITY INVOKER
+- privileged security-table read: NO
+- caller-controlled authority arguments: NONE
+
+## security.current_login_account_id()
+
+- schema: security
+- arguments: none
+- return: uuid
+- security mode: SECURITY DEFINER
+- search_path: empty
+- schema-qualified references: REQUIRED
+
+## security.current_authenticated_session_id()
+
+- schema: security
+- arguments: none
+- return: uuid
+- security mode: SECURITY DEFINER
+- search_path: empty
+- schema-qualified references: REQUIRED
+
+## security.current_company_id()
+
+- schema: security
+- arguments: none
+- return: uuid
+- security mode: SECURITY DEFINER
+- search_path: empty
+- schema-qualified references: REQUIRED
+
+## security.has_permission(text,text,text)
+
+- schema: security
+- arguments:
+  - module_code text
+  - resource_code text
+  - action_code text
+- return: boolean
+- security mode: SECURITY DEFINER
+- search_path: empty
+- schema-qualified references: REQUIRED
+- default result when unresolved: false
+
+## integration.my_company_id()
+
+- schema: integration
+- arguments: none
+- return: uuid
+- security mode: SECURITY DEFINER
+- search_path: empty
+- schema-qualified references: REQUIRED
+- canonical internal call:
+  security.current_company_id()
+- legacy core.company_users lookup: PROHIBITED
+- LIMIT 1 Company selection: PROHIBITED
+
+## SECURITY DEFINER SQL ATTRIBUTE
+
+The equivalent implementation form for authority-reading helpers includes:
+
+SECURITY DEFINER
+SET search_path = ''
+
+This exact search-path posture applies to the canonical resolver functions
+above and to integration.my_company_id().
+
+## CLAIM HELPER SQL ATTRIBUTE
+
+Claim-only helpers are created explicitly as:
+
+SECURITY INVOKER
+
+and do not rely on implementation-default security mode being remembered
+implicitly.
+
+## ROLE DEFINITION PHYSICAL ENFORCEMENT
+
+No Role Definition validation trigger is required solely for:
+
+- MODULE_BUILTIN requiring module_code;
+- COMPANY_CUSTOM prohibition on reserved common role codes.
+
+Those two invariants are physically enforced by:
+
+- ck_rd__module_origin;
+- ck_rd__reserved_custom_code.
+
+Other cross-row Role Assignment validation remains trigger-enforced as
+already defined.

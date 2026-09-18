@@ -365,3 +365,143 @@ access.
 Human and Service authorization may share Permission Definitions but their
 identity, credential, company-access, and assignment mechanisms remain
 separate.
+
+# ERP LOGIN / AUTH EXACT PHYSICAL DDL CANONICAL V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+This extension defines the exact physical persistence boundary for ERP
+Login, Authentication, Authorization, Company Membership, Role/Permission,
+Session Context, User Preference, and Service Identity.
+
+## AUTHORITY
+
+Provider-managed authentication authority remains:
+
+- auth.users
+- auth.identities
+- auth.sessions
+- auth.refresh_tokens
+
+ERP-owned security authority is exactly sixteen tables in schema security:
+
+1. security.login_account
+2. security.login_identity_binding
+3. security.user_provisioning_request
+4. security.authenticated_session
+5. security.company_membership
+6. security.login_account_preference
+7. security.company_auth_policy
+8. security.role_definition
+9. security.permission_definition
+10. security.role_permission
+11. security.login_account_role_assignment
+12. security.membership_role_assignment
+13. security.service_identity
+14. security.service_credential
+15. security.service_company_access
+16. security.service_role_assignment
+
+Company authority remains core.company.
+
+Provider-managed auth tables are not ERP authorization authority.
+
+No ERP security authority object is created in public.
+
+## PROVIDER BOUNDARY
+
+Provider subject and provider session are external references.
+
+security tables must not create hard foreign keys to provider-managed
+auth tables.
+
+For SUPABASE_AUTH:
+
+- provider subject corresponds to auth.users.id;
+- provider session reference corresponds to the trusted session_id claim
+  and correlates with auth.sessions.id.
+
+Provider UID is not ERP Login Account ID.
+
+Provider authentication alone grants no ERP access.
+
+## IDENTIFIERS AND TIME
+
+ERP-owned security primary identifiers use uuid.
+
+Default UUID generation is gen_random_uuid().
+
+Security timestamps use timestamptz.
+
+Effective periods use half-open semantics:
+
+[effective_from, effective_to)
+
+A null effective_to means open-ended.
+
+Lifecycle statuses are constrained text rather than PostgreSQL ENUM types.
+
+## HARD DELETE
+
+Ordinary lifecycle processing does not hard-delete:
+
+- Login Account;
+- Company Membership;
+- Role Definition;
+- Role Assignment;
+- Service Identity;
+- Service Company Access.
+
+History is preserved by status and effective period.
+
+## ROLE LIFECYCLE
+
+Role Definition lifecycle is:
+
+CREATE
+→ UPDATE
+→ DISABLE or DEPRECATE
+→ RETIRE.
+
+RETIRED roles are not effective for new authorization.
+
+## EXECUTION ACTOR
+
+Execution Actor Context remains derived runtime context.
+
+This extension does not create a seventeenth persistent actor authority
+table.
+
+Existing actor columns must not be automatically repointed from
+core.app_user to security.login_account.
+
+Every actor column must first be classified as:
+
+- HUMAN_IDENTITY;
+- EXECUTION_ACTOR;
+- REQUESTED_BY_HUMAN.
+
+## LEGACY
+
+The following are not canonical authority:
+
+- core.app_user;
+- core.company_users;
+- core.user_permissions;
+- governance.role;
+- governance.role_permission;
+- system.role_def;
+- system.role_screen_permission.
+
+Initial Login/Auth implementation must not drop them.
+
+Dual authority is prohibited.
+
+## SERVICE SECRET
+
+security.service_credential stores credential metadata and a non-secret
+credential reference.
+
+Plaintext service secrets are prohibited.
+
+PHYSICAL_SERVICE_CREDENTIAL_STORE remains intentionally UNDECIDED.

@@ -322,3 +322,285 @@ Security/audit event categories must include at minimum:
 
 Sensitive credentials, raw authentication tokens, and secret material must
 not appear in audit payloads.
+
+# ERP LOGIN / AUTH EXACT DATABASE SECURITY V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+## RLS
+
+RLS is enabled on all sixteen security authority tables.
+
+Default access is deny.
+
+No generic authenticated:
+
+USING (true)
+
+or:
+
+WITH CHECK (true)
+
+policy is permitted.
+
+Direct ordinary anon/authenticated CRUD against security authority tables
+is prohibited.
+
+## PRIVILEGES
+
+Security implementation must revoke inappropriate object privileges from
+PUBLIC.
+
+Only explicitly approved helper EXECUTE privileges may be exposed to
+ordinary authenticated request paths.
+
+Schema USAGE does not grant table DML.
+
+## SECURITY DEFINER
+
+Every security-definer function must:
+
+- have trusted owner;
+- use locked or empty search_path;
+- schema-qualify objects;
+- validate actor;
+- validate Company;
+- avoid dynamic caller-controlled SQL;
+- return no secrets;
+- log no secrets.
+
+## HUMAN SESSION VALIDITY
+
+Human ERP authorization fails closed when:
+
+- provider subject missing;
+- provider session reference missing;
+- Provider Binding inactive;
+- Login Account not ACTIVE;
+- ERP Session not ACTIVE;
+- ERP Session expired;
+- authorization_version stale;
+- selected Membership inactive;
+- selected Membership ineffective;
+- current AAL below Company requirement.
+
+## PROVIDER SESSION LIFECYCLE
+
+ERP does not FK security.authenticated_session to auth.sessions.
+
+Provider lifecycle therefore cannot be blocked by ERP FK constraints.
+
+Trusted runtime validation determines provider-session acceptability.
+
+## LAST ADMIN GUARD
+
+A DEFERRABLE constraint-trigger mechanism enforces the final effective
+COMPANY_SYSTEM_ADMIN invariant.
+
+It must support atomic replacement transactions.
+
+## TEMPORAL CONSTRAINTS
+
+Temporal non-overlap must not require installation of an unreviewed
+PostgreSQL extension.
+
+DEFERRABLE security constraint triggers are the canonical default.
+
+## ROLE VALIDATION
+
+Governed validation rejects:
+
+- company role in login_account_role_assignment;
+- system role in membership_role_assignment;
+- service role in human assignments;
+- non-service role in service_role_assignment;
+- COMPANY_CUSTOM cross-company assignment;
+- company service role without matching active Service Company Access.
+
+## SERVICE CREDENTIAL
+
+security.service_credential stores no secret value.
+
+PHYSICAL_SERVICE_CREDENTIAL_STORE remains UNDECIDED.
+
+Supabase service_role or equivalent provider-admin key is infrastructure
+credential, not an individual AI Worker identity.
+
+## AUDIT
+
+Security events must not contain:
+
+- passwords;
+- password hashes;
+- JWTs;
+- refresh tokens;
+- MFA secrets;
+- invitation secrets;
+- service secret material.
+
+# ERP LOGIN / AUTH EXACT PRIVILEGE MATRIX V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_PHYSICAL_EXACTNESS_V1
+
+The following privilege statements define the canonical ordinary-client
+security boundary.
+
+After the sixteen tables and approved helper functions exist, the
+implementation applies the equivalent of these exact privilege statements.
+
+REVOKE ALL ON SCHEMA security FROM PUBLIC;
+REVOKE ALL ON SCHEMA security FROM anon;
+
+REVOKE ALL ON ALL TABLES IN SCHEMA security FROM PUBLIC;
+REVOKE ALL ON ALL TABLES IN SCHEMA security FROM anon;
+REVOKE ALL ON ALL TABLES IN SCHEMA security FROM authenticated;
+
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA security FROM PUBLIC;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA security FROM anon;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA security FROM authenticated;
+
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA security FROM PUBLIC;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA security FROM anon;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA security FROM authenticated;
+
+GRANT USAGE ON SCHEMA security TO authenticated;
+GRANT USAGE ON SCHEMA security TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.current_provider_session_reference()
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.current_aal()
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.current_login_account_id()
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.current_authenticated_session_id()
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.current_company_id()
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.has_permission(text,text,text)
+TO authenticated;
+
+GRANT EXECUTE
+ON FUNCTION security.current_provider_session_reference()
+TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.current_aal()
+TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.current_login_account_id()
+TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.current_authenticated_session_id()
+TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.current_company_id()
+TO service_role;
+
+GRANT EXECUTE
+ON FUNCTION security.has_permission(text,text,text)
+TO service_role;
+
+No canonical direct table SELECT/INSERT/UPDATE/DELETE grant is made to:
+
+- anon;
+- authenticated;
+- service_role
+
+by this Login/Auth authority design.
+
+Trusted migration/owner execution and explicitly governed SECURITY DEFINER
+mutation routines are separate from client-role grants.
+
+The presence of service_role in this EXECUTE matrix does not make
+service_role an ERP actor identity.
+
+A provider-wide service_role credential must never be used as attribution
+for an individual AI Worker or Service Identity.
+
+New security functions are not implicitly executable by ordinary callers.
+Each newly introduced callable function requires an explicit reviewed GRANT.
+
+# ERP LOGIN / AUTH EXACT FUNCTION EXECUTION SECURITY V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_SEMANTIC_CLOSURE_V1
+
+## SECURITY INVOKER FUNCTIONS
+
+The following claim-only helpers are SECURITY INVOKER:
+
+- security.current_provider_session_reference()
+- security.current_aal()
+
+They do not receive privileged authority-table access by function mode.
+
+## SECURITY DEFINER AUTHORITY RESOLVERS
+
+The following are SECURITY DEFINER:
+
+- security.current_login_account_id()
+- security.current_authenticated_session_id()
+- security.current_company_id()
+- security.has_permission(text,text,text)
+- integration.my_company_id()
+
+Every such function uses:
+
+SET search_path = ''
+
+Every referenced database object and function is schema-qualified.
+
+No unqualified relation lookup is allowed.
+
+No caller-controlled search_path participates in authority resolution.
+
+## OWNERSHIP
+
+SECURITY DEFINER ownership is restricted to a trusted governed owner.
+
+The canonical implementation must not make:
+
+- anon;
+- authenticated
+
+the owner of these functions.
+
+EXECUTE grant does not convey ownership or direct table privileges.
+
+## CLAIM TRUST BOUNDARY
+
+Claim helpers may read only the trusted request-claim channel presented by
+the authenticated Supabase/PostgREST request path.
+
+A plain function argument supplied by the browser is not a trusted
+replacement for:
+
+- provider subject;
+- session_id;
+- AAL;
+- selected Company.
+
+## my_company_id COMPATIBILITY SECURITY
+
+integration.my_company_id() remains a compatibility function, not an
+independent authorization authority.
+
+SECURITY DEFINER is used only to reach the protected
+security.current_company_id() resolver while direct security-table access
+remains denied to ordinary client roles.
+
+The wrapper returns the result of the trusted resolver; it does not
+reimplement membership selection.

@@ -400,3 +400,137 @@ AI Worker does not use a human session.
 
 Supabase service_role or an equivalent unrestricted provider administrative
 key must not be treated as an individual AI Worker identity.
+
+# ERP LOGIN / AUTH EXACT PHYSICAL ARCHITECTURE V1
+
+canonical_extension: ERP_LOGIN_AUTH_EXACT_DDL_CANONICAL_V1
+
+## HUMAN IDENTITY CHAIN
+
+auth.users
+→ security.login_identity_binding
+→ security.login_account
+→ security.company_membership
+→ core.company.
+
+## HUMAN AUTHORIZATION CHAIN
+
+System role:
+
+security.login_account
+→ security.login_account_role_assignment
+→ security.role_definition
+→ security.role_permission
+→ security.permission_definition.
+
+Company role:
+
+security.login_account
+→ security.company_membership
+→ security.membership_role_assignment
+→ security.role_definition
+→ security.role_permission
+→ security.permission_definition.
+
+## SERVICE AUTHORIZATION CHAIN
+
+security.service_identity
+→ security.service_company_access
+→ security.service_role_assignment
+→ security.role_definition
+→ security.role_permission
+→ security.permission_definition.
+
+Service Identity never uses human Login Account or Company Membership.
+
+## SESSION CHAIN
+
+Trusted Supabase authentication provides:
+
+- provider subject;
+- provider session_id;
+- current AAL.
+
+ERP resolves:
+
+provider subject
+→ ACTIVE login_identity_binding
+→ ACTIVE login_account
+→ ACTIVE security.authenticated_session
+→ selected company
+→ ACTIVE effective company_membership
+→ effective authorization.
+
+## AUTHORIZATION VERSION
+
+security.login_account owns authorization_version.
+
+security.authenticated_session stores the authorization_version snapshot
+used when authorization was established.
+
+A human session is authorization-current only when:
+
+authenticated_session.authorization_version
+=
+login_account.authorization_version.
+
+Membership, role assignment, role-permission, or relevant role changes
+must invalidate affected Login Accounts by incrementing
+authorization_version.
+
+security.service_identity owns an independent authorization_version for
+service authorization invalidation.
+
+authorization_version is monotonic and must never decrease.
+
+## COMPANY CONTEXT
+
+security.current_company_id() is the internal trusted company resolver.
+
+integration.my_company_id() remains the compatibility boundary and resolves
+through security.current_company_id().
+
+Arbitrary LIMIT 1 membership selection is prohibited.
+
+Caller-provided company_id is not authority.
+
+## AUTHENTICATION ASSURANCE
+
+security.company_auth_policy defines required_aal:
+
+- aal1;
+- aal2.
+
+Logical require_mfa=true is represented by required_aal=aal2.
+
+MFA factor secrets remain provider-managed.
+
+## DATABASE SECURITY POSTURE
+
+All sixteen security authority tables:
+
+- enable RLS;
+- deny direct anon DML;
+- deny direct authenticated DML;
+- do not expose generic authenticated CRUD.
+
+Governed backend routines perform security mutations.
+
+Security-definer routines must use locked search_path and explicit
+schema-qualified object references.
+
+## CURRENT DEPENDENCY BASELINE
+
+Accepted existing database evidence:
+
+- 179 policies reference integration.my_company_id();
+- 12 policies reference auth.uid() directly;
+- 2 policies reference both;
+- 14 inbound actor FKs reference core.app_user;
+- 2 FKs reference system.role_def;
+- current legacy actor source rows are zero.
+
+The 179-policy surface should be preserved where possible by the
+integration.my_company_id() compatibility boundary.
+
+The 12 direct auth.uid() policies require explicit semantic review.
